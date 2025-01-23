@@ -53,6 +53,7 @@ for comando in comandos_exemplo:
     
 print("======================\n")
 
+print(len(comandos_exemplo))
 
 sair = False
 while(not sair):

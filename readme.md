@@ -7,7 +7,7 @@ ___
 Opções de frameworks para facilitar o desenvolvimento:
 - [PyWebView](https://pywebview.flowrl.com/)
 - [Dear PyGui](https://dearpygui.readthedocs.io/en/latest/)
-<br>
+
 ___
 
 ## Back End
