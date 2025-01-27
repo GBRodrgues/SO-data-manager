@@ -11,29 +11,33 @@ Opções de frameworks para facilitar o desenvolvimento:
 ___
 
 ## Back End
+Estrutura de pastas
+```
+back-end/
+│── src/                     # Código-fonte principal
+│   ├── config/              # Configuração do servidor
+│   │   ├── server.js        # Configuração e inicialização do Express
+│   │
+│   ├── controllers/         # Controladores das requisições HTTP
+│   │   ├── comandoController.js  # Processa comandos e chama serviços
+│   │
+│   ├── models/              # Modelos para simular arquivos e diretórios
+│   │   ├── Diretorio.js    # Simula diretórios e operações sobre eles
+│   │   ├── Arquivo.js          # Simula arquivos e operações sobre eles
+│   │
+│   ├── services/            # Regras de negócio e lógica de execução
+│   │   ├── comandoService.js  # Processa comandos e interage com models
+│   │
+│   ├── routes/              # Definição das rotas do Express
+│   │   ├── comandoRoutes.js  # Rota para processar comandos
+│
+│── tests/                   # Testes unitários automatizados
+│   ├── diretorio.test.js      # Testa manipulação de diretórios
+│   ├── arquivo.test.js            # Testa manipulação de arquivos
+│
+│── package.json              # Configuração do projeto Node.js
+│── jest.config.cjs           # Configuração do Jest para testes
+│── index.js                  # Ponto de entrada do servidor
+```
 ### Requisitos
-
-[python3.12.3](https://www.python.org/downloads/release/python-3123/)
-[Guia iniciação Python](https://github.com/arbackes/Livro_Python/blob/main/Aprendendo%20Python%20-%20um%20guia%20b%C3%A1sico%20de%20programa%C3%A7%C3%A3o.pdf)
-
-### Instalando Ambiente Virtual Python
-No repositório do projeto back-end:
-```python3 -m pip install venv```
-
-Agora crie o ambiente virtual
-```python3 -m venv venv```
-
-Ative o ambiente virtual
-- windows
-  ```venv/scripts/activate```
-- linux
-```source venv/bin/activate ```
-
-Ao finalizar as suas 'codagens', desative com o comando ```deactivate```
-
-### Instalando as bibliotecas do Python
-Com o ambiente virtual ativado, como explicado no passo anterior, instale as dependências:
-```pip install -r requirements.txt```
-
-### Executando o projeto
-```python main.py```
+ - Node JS
