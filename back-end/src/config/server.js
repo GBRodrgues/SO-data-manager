@@ -1,5 +1,5 @@
-const express = require('express');
-const commandRoutes = require('../routes/comandoRoutes');
+import express from 'express';
+import commandRoutes from '../routes/comandoRoutes.js';
 
 const app = express();
 const port = 3000;
@@ -7,11 +7,10 @@ const port = 3000;
 app.use(express.json());
 app.use('/api', commandRoutes);
 
-// Iniciar o servidor apenas se não for importado em outro arquivo (exemplo: testes)
-if (require.main === module) {
-    app.listen(port, () => {
-        console.log(`Server running at http://localhost:${port}`);
-    });
-}
 
-module.exports = app; // Exporta o app para testes
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+});
+
+
+export default app;

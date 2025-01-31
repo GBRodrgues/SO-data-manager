@@ -59,4 +59,4 @@ const comandoService = {
     }
 };
 
-module.exports = comandoService;
+export default comandoService;

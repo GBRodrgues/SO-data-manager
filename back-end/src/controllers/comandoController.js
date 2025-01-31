@@ -1,4 +1,4 @@
-const comandoService = require('../services/comandoService');
+import comandoService from '../services/comandoService.js';
 
 const comandoController = {
     executarComando: (req, res) => {
@@ -17,4 +17,4 @@ const comandoController = {
     }
 };
 
-module.exports = comandoController;
+export default comandoController;

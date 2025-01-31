@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const comandoController = require('../controllers/comandoController');
+import comandoController from '../controllers/comandoController.js';
 
 router.post('/comando-bash', comandoController.executarComando);
 
-module.exports = router;
+export default router

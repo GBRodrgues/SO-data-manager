@@ -1,2 +1,1 @@
-// Importa o servidor configurado
-require('./src/config/server');
+import './src/config/server.js'
