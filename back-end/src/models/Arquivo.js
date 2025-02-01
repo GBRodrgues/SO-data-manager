@@ -25,4 +25,4 @@ class Arquivo {
     }
 }
 
-module.exports = Arquivo;
+export default Arquivo;

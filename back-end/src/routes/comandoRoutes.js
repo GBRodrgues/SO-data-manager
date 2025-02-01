@@ -1,7 +1,10 @@
 import express from 'express';
-const router = express.Router();
 import comandoController from '../controllers/comandoController.js';
+
+
+const router = express.Router();
+
 
 router.post('/comando-bash', comandoController.executarComando);
 
-export default router
+export default router;

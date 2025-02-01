@@ -29,4 +29,4 @@ class Diretorio {
     }
 }
 
-module.exports = Diretorio;
+export default Diretorio;

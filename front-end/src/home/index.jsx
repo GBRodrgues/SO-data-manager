@@ -14,23 +14,41 @@ const Terminal = () => {
   const [command, setCommand] = useState('');
 
   const handleCommand = async (e) => {
-    if (e.key === 'Enter') {
-      const trimmedCommand = command.trim();
-      if (trimmedCommand) {
-        console.log('Enviando ao backend:', trimmedCommand);
-        setOutput((prev) => `${prev}\n$ ${trimmedCommand}`);
-        try {
-          const response = await axios.post('http://localhost:3000/execute', {
-            command: trimmedCommand,
-          });
-          setOutput((prev) => `${prev}\n${response.data.result || 'Comando executado com successo.'}`);
-        } catch (error) {
-          setOutput((prev) => `${prev}\nError: ${error.response?.data?.message || 'Falha na execução do comando.'}`);
+  if (e.key === 'Enter') {
+    const trimmedCommand = command.trim();
+    if (trimmedCommand) {
+      console.log('Comando digitado:', trimmedCommand);
+
+      // Separando o comando e o argumento
+      const [commandName, ...argsArray] = trimmedCommand.split(' ');
+      const args = { name: argsArray.join(' ') };  // Garantindo que o nome seja passado
+
+      console.log('Estrutura da requisição:', { command: commandName, args });
+
+      setOutput((prev) => `${prev}\n$ ${trimmedCommand}`);
+      
+      try {
+        const response = await axios.post('http://localhost:5174/api/comando-bash', {
+          command: commandName,
+          args: args  // Enviando args corretamente
+        });
+
+        console.log('Resposta do servidor:', response.data);
+
+        if (response.data && response.data.message) {
+          setOutput((prev) => `${prev}\n${response.data.message}`);
+        } else {
+          setOutput((prev) => `${prev}\nResposta inválida do servidor.`);
         }
+      } catch (error) {
+        console.error('Erro na requisição:', error);
+        setOutput((prev) => `${prev}\nError: ${error.response?.data?.message || 'Falha na execução do comando.'}`);
       }
+
       setCommand('');
     }
-  };
+  }
+};
 
   return (
     <TerminalWrapper>
