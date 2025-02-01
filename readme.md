@@ -11,7 +11,7 @@ Axios: Utilizado para fazer requisições HTTP para o backend.
 Styled Components: Usado para criar componentes de estilo (CSS-in-JS), permitindo um design mais modular e reutilizável.
 Estrutura do Frontend
 
-
+```
 front-end/
 │── src/                     # Código-fonte principal
 │   ├── components/          # Componentes React do sistema
@@ -27,16 +27,20 @@ front-end/
 │
 │── package.json             # Configuração do projeto React
 │── .env                     # Variáveis de ambiente (como URL do servidor)
-
-###Configuração
+```
+### Configuração
 
 Instalação das dependências: Após clonar o repositório, navegue até a pasta front-end e instale as dependências do React utilizando o comando:
 
+```
 npm install
+```
 
 Executando o Frontend: Após configurar as variáveis, inicie o servidor de desenvolvimento React com o comando:
 
+```
 npm run dev
+```
 ___
 
 ## Back End
