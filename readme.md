@@ -13,7 +13,7 @@ ___
 - [ ] echo texto > arquivo: Adicionar ou sobrescrever o conteúdo de um arquivo.
 - [ ] echo texto >> arquivo: Adicionar texto ao final do conteúdo existente de um arquivo.
 - [x] cat arquivo: Mostrar o conteúdo de um arquivo.
-- [ ] rm nome: Remover um arquivo ou diretório (mesmo que não esteja vazio).
+- [x] rm nome: Remover um arquivo ou diretório (mesmo que não esteja vazio).
 - [ ] head arquivo n: Exibir as primeiras `n` linhas do arquivo.
 - [ ] tail arquivo n: Exibir as últimas `n` linhas do arquivo.
 - [ ] wc arquivo: Mostrar o número de linhas, palavras e caracteres de um arquivo
@@ -21,7 +21,7 @@ ___
 - [ ] cd nome: Navegar para um diretório específico.
 - [ ] cd ..: Voltar ao diretório anterior.
 - [ ] cd /: Ir para o diretório raiz.
-- [ ] pwd: Exibir o caminho completo do diretório atual.
+- [x] pwd: Exibir o caminho completo do diretório atual.
 #### Busca e Filtragem:
 - [ ] find diretorio -name nome: Procurar arquivos ou diretórios pelo nome em uma
 hierarquia.

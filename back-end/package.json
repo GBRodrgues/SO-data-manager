@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/config/server.js",
+    "dev": "nodemon --legacy-watch src/config/server.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "build": "vite build",
     "lint": "eslint .",

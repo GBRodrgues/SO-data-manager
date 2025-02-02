@@ -5,6 +5,7 @@ const comandoService = {
     // Inicializando um diretório raiz para simular um sistema de arquivos
     root: new Diretorio('root'),
     currentDirectory: 'root',  // Diretório inicial é o 'root'
+    currentPath: 'root',
 
     execute: (command, args) => {
         console.log(`[LOG] Executando comando: ${command}`, args);
@@ -27,7 +28,7 @@ const comandoService = {
             case 'cat':
                 return comandoService.showFileContent(args.name);
             case 'rm':
-                return comandoService.remove(args);
+                return comandoService.remove(args.name);
             default:
                 return { success: false, message: 'Comando inválido!' };
         }
@@ -74,30 +75,29 @@ const comandoService = {
 
     listContents: () => {
         const contents = comandoService.root.listContents(); 
-        if(contents.arquivos == [] && contents.subpastas == []){
+        if(contents.arquivos.length == 0 && contents.subpastas.length == 0){
             return { success: false, message: 'Diretório vazio.'};
         }
         var conteudos = [];
         conteudos = contents.arquivos.concat(contents.subpastas);
-        console.log(conteudos.join("\n "));
         return { success: true, message: conteudos.join('\n')}
     },
 
     changeDirectory: (path) => {
         // Verifica se o caminho é válido, ou seja, se o diretório existe como subpasta do diretório atual
         const dirExists = comandoService.findDirectory(path);
-        console.log(path)
         if (!dirExists) {
             return { success: false, message: `Diretório '${path}' não encontrado.` };
         }
 
         // Muda o diretório atual
-        comandoService.currentDirectory = path;
+        comandoService.root = dirExists;
+        comandoService.currentPath = comandoService.currentPath.concat('/'.concat(path))
         return { success: true, message: `Diretório alterado para '${path}'` };
     },
 
     printWorkingDirectory: () => {
-        return { success: true, message: `Diretório atual: '${comandoService.currentDirectory}'` };
+        return { success: true, message: comandoService.currentPath};
     },
 
     getFileStats: (name) => {
@@ -128,6 +128,25 @@ const comandoService = {
             return {success : false, message: 'Arquivo não existe.'}
         }
         return {success: true, message: arquivo.read()};
+    },
+
+    remove: (name) => {
+        const arquivo = comandoService.findArquivo(name);
+        const subpasta = comandoService.findDirectory(name);
+
+        console.log(arquivo);
+        console.log(subpasta);
+
+        if(!arquivo && !subpasta){
+            return{success: false, message: "Nenhum arquivo ou subasta encontrada com esse nome."}
+        }
+        if(subpasta){
+            comandoService.root.removeSubPasta(name);
+            return{success: true, message: `Pasta '${name}' removida com sucesso!`};
+        }
+        comandoService.root.removeArquivo(name);
+        return{success: true, message: `Arquivo '${name}' removido com sucesso!`};
+
     }
 };
 
