@@ -18,6 +18,10 @@ const comandoController = {
             console.error('Erro ao executar comando:', error);
             res.status(500).json({ success: false, message: error.message });
         }
+    },
+
+    buscarCaminho: (req, res) => {
+        res.json(comandoService.printWorkingDirectory())
     }
 };
 
