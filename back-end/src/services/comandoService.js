@@ -17,13 +17,17 @@ const comandoService = {
             case 'touch':
                 return comandoService.createFile(args.name); 
             case 'ls':
-                return comandoService.listContents(args.path); 
+                return comandoService.listContents(); 
             case 'cd':
-                return comandoService.changeDirectory(args.path); 
+                return comandoService.changeDirectory(args.name); 
             case 'pwd':
                 return comandoService.printWorkingDirectory(); 
             case 'stat':
                 return comandoService.getFileStats(args.name); 
+            case 'cat':
+                return comandoService.showFileContent(args.name);
+            case 'rm':
+                return comandoService.remove(args);
             default:
                 return { success: false, message: 'Comando inválido!' };
         }
@@ -68,18 +72,21 @@ const comandoService = {
         return { success: true, message: `Arquivo '${name}' criado` };
     },
 
-    listContents: (path) => {
-        if (path && path !== 'root') {
-            return { success: false, message: `Diretório '${path}' não existe` };
-        }
-
+    listContents: () => {
         const contents = comandoService.root.listContents(); 
-        return { success: true, contents };
+        if(contents.arquivos == [] && contents.subpastas == []){
+            return { success: false, message: 'Diretório vazio.'};
+        }
+        var conteudos = [];
+        conteudos = contents.arquivos.concat(contents.subpastas);
+        console.log(conteudos.join("\n "));
+        return { success: true, message: conteudos.join('\n')}
     },
 
     changeDirectory: (path) => {
         // Verifica se o caminho é válido, ou seja, se o diretório existe como subpasta do diretório atual
         const dirExists = comandoService.findDirectory(path);
+        console.log(path)
         if (!dirExists) {
             return { success: false, message: `Diretório '${path}' não encontrado.` };
         }
@@ -109,6 +116,18 @@ const comandoService = {
     findDirectory: (name) => {
         // Verifica se o diretório existe em subpastas do diretório atual
         return comandoService.root.subpastas.find(pasta => pasta.nome === name); 
+    },
+
+    findArquivo: (name) => {
+        return comandoService.root.arquivos.find(arquivo => arquivo.nome === name);
+    },
+
+    showFileContent: (name) => {
+        const arquivo = comandoService.findArquivo(name);
+        if(!arquivo){
+            return {success : false, message: 'Arquivo não existe.'}
+        }
+        return {success: true, message: arquivo.read()};
     }
 };
 

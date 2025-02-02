@@ -2,6 +2,49 @@
 
 Sistema que simulará um Sistema Operacional, focando nas áreas de manipulação de repositórios e arquivos.
 ___
+## Comandos a serem implementados:
+#### Criação e Manipulação de Diretórios:
+- [x] mkdir nome: Criar um novo diretório.
+- [x] rmdir nome: Remover um diretório vazio.
+- [ ] tree: Mostrar a estrutura hierárquica de arquivos e diretórios.
+- [ ] rename nome_antigo novo_nome: Renomear um arquivo ou diretório
+#### Criação e Manipulação de Arquivos:
+- [x] touch nome: Criar um arquivo vazio.
+- [ ] echo texto > arquivo: Adicionar ou sobrescrever o conteúdo de um arquivo.
+- [ ] echo texto >> arquivo: Adicionar texto ao final do conteúdo existente de um arquivo.
+- [x] cat arquivo: Mostrar o conteúdo de um arquivo.
+- [ ] rm nome: Remover um arquivo ou diretório (mesmo que não esteja vazio).
+- [ ] head arquivo n: Exibir as primeiras `n` linhas do arquivo.
+- [ ] tail arquivo n: Exibir as últimas `n` linhas do arquivo.
+- [ ] wc arquivo: Mostrar o número de linhas, palavras e caracteres de um arquivo
+#### Navegação entre Diretórios:
+- [ ] cd nome: Navegar para um diretório específico.
+- [ ] cd ..: Voltar ao diretório anterior.
+- [ ] cd /: Ir para o diretório raiz.
+- [ ] pwd: Exibir o caminho completo do diretório atual.
+#### Busca e Filtragem:
+- [ ] find diretorio -name nome: Procurar arquivos ou diretórios pelo nome em uma
+hierarquia.
+- [ ] grep termo arquivo: Procurar por uma palavra ou frase dentro de um arquivo.
+####  Permissões e Propriedades (Simuladas):
+- [ ] chmod permissao nome: Alterar permissões de um arquivo ou diretório (simular
+leitura, escrita e execução).
+- [ ] chown proprietario nome: Alterar o proprietário de um arquivo ou diretório.
+- [ ] ls -l: Listar conteúdo do diretório com detalhes (nome, tipo, tamanho, permissões, etc.).  
+#### Informações sobre Arquivos e Diretórios:
+- [ ] stat nome: Exibir informações detalhadas de um arquivo ou diretório (tamanho, data
+de criação, última modificação, etc.).
+- [ ] du diretorio: Exibir o tamanho do diretório em bytes
+
+#### Operações Avançadas:
+- [ ] cp origem destino: Copiar arquivos ou diretórios.
+- [ ] mv origem destino: Mover arquivos ou diretórios para outra localização.
+- [ ] diff arquivo1 arquivo2: Comparar dois arquivos e exibir as diferenças.
+- [ ] zip arquivo.zip itens: Compactar arquivos ou diretórios em um arquivo `.zip`
+(simulado).
+- [ ] unzip arquivo.zip: Descompactar um arquivo `.zip`
+#### Extras:
+- [ ] history: Exibir os últimos comandos digitados.
 
 ## Front End
 
