@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { 
   TerminalWrapper, 
@@ -9,11 +9,25 @@ import {
   TerminalInput 
 } from './styles';
 
+
+
 const Terminal = () => {
   const [output, setOutput] = useState('Bem-vindo SO-Corro Terminal!\n');
   const [command, setCommand] = useState('');
+  const [path, setPath] = useState('root');
+  
+  const updatePath = async () => {
+    try{
+      const response = await axios.get('http://localhost:5174/api/comando-bash');
+      setPath(response.data.message);
+    }catch (error){
+      console.log(error);
+    }
+  }
+
 
   const handleCommand = async (e) => {
+  updatePath();
   if (e.key === 'Enter') {
     const trimmedCommand = command.trim();
     if (trimmedCommand) {
@@ -25,7 +39,7 @@ const Terminal = () => {
 
       console.log('Estrutura da requisição:', { command: commandName, args });
 
-      setOutput((prev) => `${prev}\n$ ${trimmedCommand}`);
+      setOutput((prev) => `${prev}\nsudo:${path}$ ${trimmedCommand}`);
       
       try {
         const response = await axios.post('http://localhost:5174/api/comando-bash', {
@@ -35,7 +49,7 @@ const Terminal = () => {
 
         console.log('Resposta do servidor:', response.data);
 
-        if (response.data && response.data.message) {
+        if (response.data) {
           setOutput((prev) => `${prev}\n${response.data.message}`);
         } else {
           setOutput((prev) => `${prev}\nResposta inválida do servidor.`);
@@ -44,8 +58,8 @@ const Terminal = () => {
         console.error('Erro na requisição:', error);
         setOutput((prev) => `${prev}\nError: ${error.response?.data?.message || 'Falha na execução do comando.'}`);
       }
-
       setCommand('');
+      updatePath();
     }
   }
 };
@@ -55,7 +69,10 @@ const Terminal = () => {
       <TerminalContainer>
         <TerminalOutput>{output}</TerminalOutput>
         <TerminalInputContainer>
-          <TerminalPrompt>$</TerminalPrompt>
+          <TerminalPrompt
+          onChange={updatePath}
+          onLoad={updatePath}>{path}$ 
+          </TerminalPrompt>
           <TerminalInput
             type="text"
             value={command}
