@@ -28,11 +28,13 @@ const Terminal = () => {
 
   const handleCommand = async (e) => {
   updatePath();
+  console.log(e.key)
   if (e.key === 'Enter') {
     const trimmedCommand = command.trim();
     if (trimmedCommand) {
-      console.log('Comando digitado:', trimmedCommand);
 
+
+      console.log('Comando digitado:', trimmedCommand);
       // Separando o comando e o argumento
       const [commandName, ...argsArray] = trimmedCommand.split(' ');
       const args = { name: argsArray.join(' ') };  // Garantindo que o nome seja passado
@@ -60,6 +62,30 @@ const Terminal = () => {
       }
       setCommand('');
       updatePath();
+    }
+  }
+  if (e.key === 'ArrowUp') {
+    try {
+      const response = await axios.post('http://localhost:5174/api/comando-bash', {
+        command: "arrow",
+        args: {name: "up"}  // Enviando args corretamente
+      });
+      let last_command = response.data.command;
+      setCommand(last_command);
+    } catch(error){
+      console.log(error)
+    }
+  }
+  if (e.key === 'ArrowDown') {
+    try {
+      const response = await axios.post('http://localhost:5174/api/comando-bash', {
+        command: 'arrow',
+        args: {name: 'down'}  // Enviando args corretamente
+      });
+      let last_command = response.data.command;
+      setCommand(last_command);
+    } catch(error){
+      console.log(error)
     }
   }
 };
