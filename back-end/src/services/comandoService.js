@@ -6,9 +6,9 @@ const comandoService = {
     root: new Diretorio('root'),
     currentDirectory: 'root',  // Diretório inicial é o 'root'
     currentPath: 'root',
-
     execute: (command, args) => {
         console.log(`[LOG] Executando comando: ${command}`, args);
+        console.log(command + ' ' + args.name)
 
         switch (command) {
             case 'mkdir':
@@ -147,7 +147,7 @@ const comandoService = {
         comandoService.root.removeArquivo(name);
         return{success: true, message: `Arquivo '${name}' removido com sucesso!`};
 
-    }
+    },
 };
 
 export default comandoService;

@@ -15,8 +15,6 @@ const Terminal = () => {
   const [output, setOutput] = useState('Bem-vindo SO-Corro Terminal!\n');
   const [command, setCommand] = useState('');
   const [path, setPath] = useState('root');
-  const [comand_history] = useState([]);
-  let [indice_comand_h, setIndice] = useState(1);
   
   const updatePath = async () => {
     try{
@@ -34,9 +32,9 @@ const Terminal = () => {
   if (e.key === 'Enter') {
     const trimmedCommand = command.trim();
     if (trimmedCommand) {
+
+
       console.log('Comando digitado:', trimmedCommand);
-      comand_history.push(trimmedCommand)
-      console.log(comand_history)
       // Separando o comando e o argumento
       const [commandName, ...argsArray] = trimmedCommand.split(' ');
       const args = { name: argsArray.join(' ') };  // Garantindo que o nome seja passado
@@ -64,16 +62,31 @@ const Terminal = () => {
       }
       setCommand('');
       updatePath();
-      setIndice(1);
     }
   }
-  if (e.key === 'ArrowUp' && indice_comand_h < comand_history.length) {
-    setIndice(indice_comand_h += 1);
-    setCommand(comand_history.at(comand_history.length -indice_comand_h));
+  if (e.key === 'ArrowUp') {
+    try {
+      const response = await axios.post('http://localhost:5174/api/comando-bash', {
+        command: "arrow",
+        args: {name: "up"}  // Enviando args corretamente
+      });
+      let last_command = response.data.command;
+      setCommand(last_command);
+    } catch(error){
+      console.log(error)
+    }
   }
-  if (e.key === 'ArrowDown'  && indice_comand_h > 0) {
-    setIndice(indice_comand_h -= 1);
-    setCommand(comand_history.at(comand_history.length -indice_comand_h));
+  if (e.key === 'ArrowDown') {
+    try {
+      const response = await axios.post('http://localhost:5174/api/comando-bash', {
+        command: 'arrow',
+        args: {name: 'down'}  // Enviando args corretamente
+      });
+      let last_command = response.data.command;
+      setCommand(last_command);
+    } catch(error){
+      console.log(error)
+    }
   }
 };
 
