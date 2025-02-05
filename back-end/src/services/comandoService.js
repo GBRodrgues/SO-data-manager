@@ -4,7 +4,7 @@ import Arquivo from '../models/Arquivo.js';
 const comandoService = {
     // Inicializando um diretório raiz para simular um sistema de arquivos
     root: Diretorio.setupRoot(),
-    currentPath: '/',
+    currentPath: '~',
     execute: (command, args) => {
         console.log(`[LOG] Executando comando: ${command}`, args);
         console.log(command + ' ' + args.name)
@@ -45,7 +45,7 @@ const comandoService = {
             return { success: false, message: `O diretório '${name}' já existe` };
         }
 
-        const newDir = new Diretorio(name);
+        const newDir = new Diretorio(name, comandoService.root);
         comandoService.root.addSubPasta(newDir); 
         return { success: true, message: `Diretório '${name}' criado com sucesso.` };
     },
@@ -85,20 +85,57 @@ const comandoService = {
     },
 
     changeDirectory: (path) => {
-        // Verifica se o caminho é válido, ou seja, se o diretório existe como subpasta do diretório atual
-        const dirExists = comandoService.findDirectory(path);
-        if (!dirExists) {
-            return { success: false, message: `Diretório '${path}' não encontrado.` };
-        }
+        var pasta_atual = comandoService.root;
 
-        // Muda o diretório atual
-        comandoService.root = dirExists;
-        comandoService.currentPath = comandoService.currentPath.concat('/'.concat(path))
-        return { success: true, message: `Diretório alterado para '${path}'` };
+        
+        if(path == '/' || path == '~'){//Se passar no cd algum desses dois caminho conhecido como rota raiz, tem que voltar até a inicial
+            var raiz = false;
+            while(!raiz){
+                if(pasta_atual.nome == '~'){
+                    raiz = true;
+                }else{
+                    pasta_atual = pasta_atual.diretorioPai;
+                }
+            }
+            comandoService.root = pasta_atual;
+            return {success:true, message:"Retornamos a pasta raiz"}
+        }
+        
+        var rota = path.split('/');
+        
+        rota.forEach(destino => {
+            console.log(destino)
+            if(destino != '.'){//devemos continuar na mesma pasta, ou seja, não processar nada
+                if(destino == '..') {// Devemos retornar a pasta pai
+                    if(pasta_atual.nome == '~'){//Se a pasta for a raiz
+                        return{success:false, message:"Você já está na pasta raiz."};
+                    }
+                    pasta_atual = pasta_atual.getDiretorioPai();   
+                }else{
+                    var diretorio = comandoService.findDirectory(destino); //procurando diretorio com o nome
+                    if(diretorio){
+                        console.log(diretorio)
+                        pasta_atual = diretorio;
+                    }else{
+                        pasta_atual = null;
+                    }
+                }
+            }
+            if(pasta_atual){
+                comandoService.root = pasta_atual; // se encontrar a pasta da repetição, muda o root para essa
+            }else{
+                return {success:false, message: `Não foi possível encontrar o diretório ${path}`} // se deparar com uma pasta vazia, cancela a busca
+            }
+            
+        });
+        //se tiver verificado todas as pastas do caminho, e tiver econtrado. Retorna succes
+        if(comandoService.root){
+            return{success:true, message: `Diretório alterado para ${path}`}
+        }
     },
 
     printWorkingDirectory: () => {
-        return { success: true, message: comandoService.currentPath};
+        return { success: true, message: comandoService.root.printWorkDirectory()};
     },
 
     getFileStats: (name) => {
