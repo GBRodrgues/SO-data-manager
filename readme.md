@@ -18,9 +18,9 @@ ___
 - [ ] tail arquivo n: Exibir as últimas `n` linhas do arquivo.
 - [ ] wc arquivo: Mostrar o número de linhas, palavras e caracteres de um arquivo
 #### Navegação entre Diretórios:
-- [ ] cd nome: Navegar para um diretório específico.
-- [ ] cd ..: Voltar ao diretório anterior.
-- [ ] cd /: Ir para o diretório raiz.
+- [x] cd nome: Navegar para um diretório específico.
+- [x] cd ..: Voltar ao diretório anterior.
+- [x] cd /: Ir para o diretório raiz.
 - [x] pwd: Exibir o caminho completo do diretório atual.
 #### Busca e Filtragem:
 - [ ] find diretorio -name nome: Procurar arquivos ou diretórios pelo nome em uma

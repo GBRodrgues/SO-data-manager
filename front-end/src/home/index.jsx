@@ -14,7 +14,7 @@ import {
 const Terminal = () => {
   const [output, setOutput] = useState('Bem-vindo SO-Corro Terminal!\n');
   const [command, setCommand] = useState('');
-  const [path, setPath] = useState('/');
+  const [path, setPath] = useState('~');
   
   const updatePath = async () => {
     try{

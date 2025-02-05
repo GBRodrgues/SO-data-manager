@@ -11,7 +11,7 @@ class Diretorio {
     }
 
     static setupRoot(){
-        var rootDir = new Diretorio('/', null);
+        var rootDir = new Diretorio('~', null);
         let hello_world = new Arquivo('hello_world.txt','Olá\nArquivo de testes!');
         rootDir.addArquivo(hello_world);
         let usr = new Diretorio('usr', rootDir);
@@ -39,12 +39,22 @@ class Diretorio {
         this.nome = nome;
     }
 
+    getDiretorioPai(){
+        return this.diretorioPai;
+    }
 
     listContents() {
         return {
             arquivos: this.arquivos.map(f => f.nome),
             subpastas: this.subpastas.map(d => d.nome)
         };
+    }
+
+    printWorkDirectory(){
+        if(this.nome == '~'){
+            return this.nome;
+        }
+        return this.diretorioPai.printWorkDirectory() + '/' + this.nome
     }
 }
 
