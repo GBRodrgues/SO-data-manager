@@ -3,9 +3,8 @@ import Arquivo from '../models/Arquivo.js';
 
 const comandoService = {
     // Inicializando um diretório raiz para simular um sistema de arquivos
-    root: new Diretorio('root'),
-    currentDirectory: 'root',  // Diretório inicial é o 'root'
-    currentPath: 'root',
+    root: Diretorio.setupRoot(),
+    currentPath: '/',
     execute: (command, args) => {
         console.log(`[LOG] Executando comando: ${command}`, args);
         console.log(command + ' ' + args.name)
@@ -29,6 +28,8 @@ const comandoService = {
                 return comandoService.showFileContent(args.name);
             case 'rm':
                 return comandoService.remove(args.name);
+            case 'rename':
+                return comandoService.rename(args.name);
             default:
                 return { success: false, message: 'Comando inválido!' };
         }
@@ -148,6 +149,26 @@ const comandoService = {
         return{success: true, message: `Arquivo '${name}' removido com sucesso!`};
 
     },
+
+    rename: (nomes) => {
+        let vetor_nomes = nomes.split(" ");
+        let nome_antigo = vetor_nomes[0];
+        let nome_novo = vetor_nomes[1];
+        console.log(nome_antigo)
+        let arquivo = comandoService.findArquivo(nome_antigo);
+        let dir = comandoService.findDirectory(nome_antigo);
+
+        if(arquivo){
+            arquivo.updateNome(nome_novo);
+            return{success: true, message: `Nome do arquivo alterado de "${nome_antigo}" para "${nome_novo}"`};
+        }
+        if(dir){
+            dir.updateNome(nome_novo);
+            return{success: true, message: `Nome do diretorio alterado de "${nome_antigo}" para "${nome_novo}"`};
+        }
+
+        return{success:false, message: `Arquivo ou diretório "${nome_antigo}" não encontrado.`};
+    }
 };
 
 export default comandoService;
