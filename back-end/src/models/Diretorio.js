@@ -1,8 +1,22 @@
+import Arquivo from "./Arquivo.js";
 class Diretorio {
-    constructor(nome) {
+
+
+    constructor(nome, pai) {
         this.nome = nome;
         this.arquivos = [];
         this.subpastas = [];
+        this.data_modificacao = Date.now();
+        this.diretorioPai = pai;
+    }
+
+    static setupRoot(){
+        var rootDir = new Diretorio('/', null);
+        let hello_world = new Arquivo('hello_world.txt','Olá\nArquivo de testes!');
+        rootDir.addArquivo(hello_world);
+        let usr = new Diretorio('usr', rootDir);
+        rootDir.addSubPasta(usr);
+        return rootDir;
     }
 
     addArquivo(arquivo) {
@@ -20,6 +34,11 @@ class Diretorio {
     removeSubPasta(nomePasta) {
         this.subpastas = this.subpastas.filter(pasta => pasta.nome !== nomePasta);
     }
+
+    updateNome(nome){
+        this.nome = nome;
+    }
+
 
     listContents() {
         return {

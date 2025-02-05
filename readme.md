@@ -7,7 +7,7 @@ ___
 - [x] mkdir nome: Criar um novo diretório.
 - [x] rmdir nome: Remover um diretório vazio.
 - [ ] tree: Mostrar a estrutura hierárquica de arquivos e diretórios.
-- [ ] rename nome_antigo novo_nome: Renomear um arquivo ou diretório
+- [x] rename nome_antigo novo_nome: Renomear um arquivo ou diretório
 #### Criação e Manipulação de Arquivos:
 - [x] touch nome: Criar um arquivo vazio.
 - [ ] echo texto > arquivo: Adicionar ou sobrescrever o conteúdo de um arquivo.
@@ -44,7 +44,7 @@ de criação, última modificação, etc.).
 (simulado).
 - [ ] unzip arquivo.zip: Descompactar um arquivo `.zip`
 #### Extras:
-- [ ] history: Exibir os últimos comandos digitados.
+- [x] history: Exibir os últimos comandos digitados.
 
 ## Front End
 
