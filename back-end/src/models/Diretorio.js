@@ -1,4 +1,5 @@
 import Arquivo from "./Arquivo.js";
+<<<<<<< HEAD
 
 class Diretorio {
   constructor(nome, pai = null) {
@@ -8,6 +9,27 @@ class Diretorio {
     this.dataModificacao = Date.now();
     this.diretorioPai = pai;
   }
+=======
+class Diretorio {
+
+
+    constructor(nome, pai) {
+        this.nome = nome;
+        this.arquivos = [];
+        this.subpastas = [];
+        this.data_modificacao = Date.now();
+        this.diretorioPai = pai;
+    }
+
+    static setupRoot(){
+        var rootDir = new Diretorio('~', null);
+        let hello_world = new Arquivo('hello_world.txt','Olá\nArquivo de testes!');
+        rootDir.addArquivo(hello_world);
+        let usr = new Diretorio('usr', rootDir);
+        rootDir.addSubPasta(usr);
+        return rootDir;
+    }
+>>>>>>> 3d0a9d2c78e47ec7be62a46c023a308c8db382d7
 
   static setupRoot() {
     const rootDir = new Diretorio("~");
@@ -44,6 +66,7 @@ class Diretorio {
     );
   }
 
+<<<<<<< HEAD
   removeSubPasta(nomePasta) {
     this.subpastas = this.subpastas.filter((pasta) => pasta.nome !== nomePasta);
   }
@@ -75,6 +98,29 @@ class Diretorio {
       ? `${this.diretorioPai.printWorkDirectory()}/${this.nome}`
       : this.nome;
   }
+=======
+    updateNome(nome){
+        this.nome = nome;
+    }
+
+    getDiretorioPai(){
+        return this.diretorioPai;
+    }
+
+    listContents() {
+        return {
+            arquivos: this.arquivos.map(f => f.nome),
+            subpastas: this.subpastas.map(d => d.nome)
+        };
+    }
+
+    printWorkDirectory(){
+        if(this.nome == '~'){
+            return this.nome;
+        }
+        return this.diretorioPai.printWorkDirectory() + '/' + this.nome
+    }
+>>>>>>> 3d0a9d2c78e47ec7be62a46c023a308c8db382d7
 }
 
 export default Diretorio;
