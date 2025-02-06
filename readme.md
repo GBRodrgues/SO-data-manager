@@ -17,12 +17,12 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 
 - [x] touch nome: Criar um arquivo vazio.
 - [x] echo texto > arquivo: Adicionar ou sobrescrever o conteúdo de um arquivo.
-- [ ] echo texto >> arquivo: Adicionar texto ao final do conteúdo existente de um arquivo.
+- [x] echo texto >> arquivo: Adicionar texto ao final do conteúdo existente de um arquivo.
 - [x] cat arquivo: Mostrar o conteúdo de um arquivo.
 - [x] rm nome: Remover um arquivo ou diretório (mesmo que não esteja vazio).
-- [ ] head arquivo n: Exibir as primeiras `n` linhas do arquivo.
-- [ ] tail arquivo n: Exibir as últimas `n` linhas do arquivo.
-- [ ] wc arquivo: Mostrar o número de linhas, palavras e caracteres de um arquivo
+- [x] head arquivo n: Exibir as primeiras `n` linhas do arquivo.
+- [x] tail arquivo n: Exibir as últimas `n` linhas do arquivo.
+- [x] wc arquivo: Mostrar o número de linhas, palavras e caracteres de um arquivo
 
 #### Navegação entre Diretórios:
 
