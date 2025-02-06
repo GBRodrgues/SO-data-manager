@@ -10,14 +10,9 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 
 - [x] mkdir nome: Criar um novo diretório.
 - [x] rmdir nome: Remover um diretório vazio.
-<<<<<<< HEAD
 - [x] tree: Mostrar a estrutura hierárquica de arquivos e diretórios.
 - [x] rename nome_antigo novo_nome: Renomear um arquivo ou diretório
 
-=======
-- [ ] tree: Mostrar a estrutura hierárquica de arquivos e diretórios.
-- [x] rename nome_antigo novo_nome: Renomear um arquivo ou diretório
->>>>>>> 3d0a9d2c78e47ec7be62a46c023a308c8db382d7
 #### Criação e Manipulação de Arquivos:
 
 - [x] touch nome: Criar um arquivo vazio.
@@ -30,10 +25,6 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 - [x] wc arquivo: Mostrar o número de linhas, palavras e caracteres de um arquivo
 
 #### Navegação entre Diretórios:
-<<<<<<< HEAD
-
-=======
->>>>>>> 3d0a9d2c78e47ec7be62a46c023a308c8db382d7
 - [x] cd nome: Navegar para um diretório específico.
 - [x] cd ..: Voltar ao diretório anterior.
 - [x] cd /: Ir para o diretório raiz.
@@ -68,10 +59,6 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 - [ ] unzip arquivo.zip: Descompactar um arquivo `.zip`
 
 #### Extras:
-<<<<<<< HEAD
-
-=======
->>>>>>> 3d0a9d2c78e47ec7be62a46c023a308c8db382d7
 - [x] history: Exibir os últimos comandos digitados.
 
 ## Front End
