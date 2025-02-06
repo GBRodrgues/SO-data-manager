@@ -1,17 +1,5 @@
 import Arquivo from "./Arquivo.js";
-<<<<<<< HEAD
-
 class Diretorio {
-  constructor(nome, pai = null) {
-    this.nome = nome;
-    this.arquivos = [];
-    this.subpastas = [];
-    this.dataModificacao = Date.now();
-    this.diretorioPai = pai;
-  }
-=======
-class Diretorio {
-
 
     constructor(nome, pai) {
         this.nome = nome;
@@ -29,16 +17,6 @@ class Diretorio {
         rootDir.addSubPasta(usr);
         return rootDir;
     }
->>>>>>> 3d0a9d2c78e47ec7be62a46c023a308c8db382d7
-
-  static setupRoot() {
-    const rootDir = new Diretorio("~");
-    rootDir.addArquivo(
-      new Arquivo("hello_world.txt", "Olá\nArquivo de testes!")
-    );
-    rootDir.addSubPasta(new Diretorio("usr", rootDir));
-    return rootDir;
-  }
 
   addArquivo(arquivo) {
     if (arquivo instanceof Arquivo) {
@@ -66,7 +44,6 @@ class Diretorio {
     );
   }
 
-<<<<<<< HEAD
   removeSubPasta(nomePasta) {
     this.subpastas = this.subpastas.filter((pasta) => pasta.nome !== nomePasta);
   }
@@ -98,29 +75,6 @@ class Diretorio {
       ? `${this.diretorioPai.printWorkDirectory()}/${this.nome}`
       : this.nome;
   }
-=======
-    updateNome(nome){
-        this.nome = nome;
-    }
-
-    getDiretorioPai(){
-        return this.diretorioPai;
-    }
-
-    listContents() {
-        return {
-            arquivos: this.arquivos.map(f => f.nome),
-            subpastas: this.subpastas.map(d => d.nome)
-        };
-    }
-
-    printWorkDirectory(){
-        if(this.nome == '~'){
-            return this.nome;
-        }
-        return this.diretorioPai.printWorkDirectory() + '/' + this.nome
-    }
->>>>>>> 3d0a9d2c78e47ec7be62a46c023a308c8db382d7
 }
 
 export default Diretorio;
