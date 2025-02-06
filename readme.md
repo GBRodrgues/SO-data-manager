@@ -10,7 +10,7 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 
 - [x] mkdir nome: Criar um novo diretório.
 - [x] rmdir nome: Remover um diretório vazio.
-- [ ] tree: Mostrar a estrutura hierárquica de arquivos e diretórios.
+- [x] tree: Mostrar a estrutura hierárquica de arquivos e diretórios.
 - [x] rename nome_antigo novo_nome: Renomear um arquivo ou diretório
 
 #### Criação e Manipulação de Arquivos:
