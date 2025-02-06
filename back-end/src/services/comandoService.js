@@ -238,30 +238,37 @@ const comandoService = {
     };
   },
   showTree: () => {
-    const buildTree = (dir, prefix = "") => {
-      let result = "";
-      const contents = dir.listContents();
-      const totalItems = contents.subpastas.length + contents.arquivos.length;
+    var root = comandoService.root.get_root();
+    //incializa a resposta com o nome da pasta raiz
+    let result = root.nome;
 
-      contents.subpastas.forEach((subpasta, index) => {
-        const isLast =
-          index === contents.subpastas.length - 1 &&
-          contents.arquivos.length === 0;
-        result += `${prefix}${isLast ? "└── " : "├── "}${subpasta.nome}\n`;
-        result += buildTree(subpasta, `${prefix}${isLast ? "    " : "│   "}`);
-      });
-
-      contents.arquivos.forEach((arquivo, index) => {
-        const isLast = index === contents.arquivos.length - 1;
-        result += `${prefix}${isLast ? "└── " : "├── "}${arquivo.nome}\n`;
-      });
-
-      return result;
+    const printTree = (dir, prefix = '', string_final) => {
+        const subpastas = dir.subpastas;
+        const arquivos = dir.arquivos ;
+        console.log(string_final)
+        const total = subpastas.length + arquivos.length;
+        
+        subpastas.forEach((pasta, index) => {
+            const isLast = index === total - 1;
+            console.log(isLast);
+            string_final = string_final.concat(prefix + (isLast ? '└── ' : '├── ') + pasta.nome+'\n');
+            string_final = printTree(pasta, prefix + (isLast ? '    ' : '│   '), string_final);
+        });
+        
+        arquivos.forEach((arquivo, index) => {
+            console.log('auhdusadh')
+            console.log(arquivo)
+            const isLast = index === arquivos.length - 1;
+            console.log(isLast);
+            string_final = string_final.concat(prefix + (isLast ? '└── ' : '├── ') + arquivo.nome+'\n');
+        });
+        return string_final;
     };
-
-    const treeStructure = buildTree(comandoService.root);
-    return { success: true, message: treeStructure };
-  },
+    
+    result = printTree(root, '', result+'\n');
+    console.log(result);
+    return {success:true, message:result};
+},
 
   writeFile: (input) => {
     // Separar o texto e o nome do arquivo

@@ -63,6 +63,13 @@ class Diretorio {
     };
   }
 
+  get_root(){
+    if (this.nome == '~'){
+      return this;
+    }
+    return this.diretorioPai.get_root();
+  }
+
   printWorkDirectory() {
     return this.diretorioPai
       ? `${this.diretorioPai.printWorkDirectory()}/${this.nome}`
