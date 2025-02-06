@@ -145,21 +145,25 @@ const comandoService = {
             pasta_atual = diretorio;
           } else {
             pasta_atual = null;
+            console.log('falhou');
+            return null
           }
         }
       }
+      console.log(pasta_atual)
       if (pasta_atual) {
         comandoService.root = pasta_atual; // se encontrar a pasta da repetição, muda o root para essa
-      } else {
-        return {
-          success: false,
-          message: `Não foi possível encontrar o diretório ${path}`,
-        }; // se deparar com uma pasta vazia, cancela a busca
+      }else {
+        return null
       }
     });
     //se tiver verificado todas as pastas do caminho, e tiver econtrado. Retorna succes
-    if (comandoService.root) {
+    if (pasta_atual != null) {
+      console.log(comandoService.root)
+      console.log(pasta_atual)
       return { success: true, message: `Diretório alterado para ${path}` };
+    }else{
+      return{success: false, message: `Diretório ${path} não encontrado` }
     }
   },
 
