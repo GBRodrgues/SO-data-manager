@@ -1,7 +1,6 @@
 import Arquivo from "./Arquivo.js";
 class Diretorio {
 
-
     constructor(nome, pai) {
         this.nome = nome;
         this.arquivos = [];
@@ -19,43 +18,63 @@ class Diretorio {
         return rootDir;
     }
 
-    addArquivo(arquivo) {
-        this.arquivos.push(arquivo);
+  addArquivo(arquivo) {
+    if (arquivo instanceof Arquivo) {
+      this.arquivos.push(arquivo);
+    } else {
+      console.error(
+        "Erro: Tentativa de adicionar um objeto inválido como arquivo."
+      );
     }
+  }
 
-    addSubPasta(subpasta) {
-        this.subpastas.push(subpasta);
+  addSubPasta(subpasta) {
+    if (subpasta instanceof Diretorio) {
+      this.subpastas.push(subpasta);
+    } else {
+      console.error(
+        "Erro: Tentativa de adicionar um objeto inválido como subpasta."
+      );
     }
+  }
 
-    removeArquivo(arquivonome) {
-        this.arquivos = this.arquivos.filter(arquivo => arquivo.nome !== arquivonome);
-    }
+  removeArquivo(nomeArquivo) {
+    this.arquivos = this.arquivos.filter(
+      (arquivo) => arquivo.nome !== nomeArquivo
+    );
+  }
 
-    removeSubPasta(nomePasta) {
-        this.subpastas = this.subpastas.filter(pasta => pasta.nome !== nomePasta);
-    }
+  removeSubPasta(nomePasta) {
+    this.subpastas = this.subpastas.filter((pasta) => pasta.nome !== nomePasta);
+  }
 
-    updateNome(nome){
-        this.nome = nome;
-    }
+  atualizarNome(novoNome) {
+    if (novoNome) this.nome = novoNome;
+  }
 
-    getDiretorioPai(){
-        return this.diretorioPai;
-    }
+  getDiretorioPai() {
+    return this.diretorioPai;
+  }
 
-    listContents() {
-        return {
-            arquivos: this.arquivos.map(f => f.nome),
-            subpastas: this.subpastas.map(d => d.nome)
-        };
-    }
+  listContents() {
+    return {
+      arquivos: this.arquivos.map((arquivo) => arquivo.nome),
+      subpastas: this.subpastas.map((pasta) => pasta.nome),
+    };
+  }
 
-    printWorkDirectory(){
-        if(this.nome == '~'){
-            return this.nome;
-        }
-        return this.diretorioPai.printWorkDirectory() + '/' + this.nome
+  get_root(){
+    if (this.nome == '~'){
+      return this;
     }
+    return this.diretorioPai.get_root();
+  }
+
+  printWorkDirectory() {
+    return this.diretorioPai
+      ? `${this.diretorioPai.printWorkDirectory()}/${this.nome}`
+      : this.nome;
+  }
 }
 
 export default Diretorio;
