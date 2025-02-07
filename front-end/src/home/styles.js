@@ -1,11 +1,13 @@
 import styled from 'styled-components';
+import codeGif from '../assets/matrix.gif';
 
 export const TerminalWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f0f0f0;
+  background: url(${codeGif}) center/cover no-repeat;
+  opacity: 0.9; /* Define a opacidade APENAS da imagem de fundo */
 `;
 
 export const TerminalContainer = styled.div`

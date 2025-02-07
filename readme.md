@@ -41,12 +41,12 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 
 - [ ] chmod permissao nome: Alterar permissões de um arquivo ou diretório (simular
       leitura, escrita e execução).
-- [ ] chown proprietario nome: Alterar o proprietário de um arquivo ou diretório.
+- [x] chown proprietario nome: Alterar o proprietário de um arquivo ou diretório.
 - [ ] ls -l: Listar conteúdo do diretório com detalhes (nome, tipo, tamanho, permissões, etc.).
 
 #### Informações sobre Arquivos e Diretórios:
 
-- [ ] stat nome: Exibir informações detalhadas de um arquivo ou diretório (tamanho, data
+- [x] stat nome: Exibir informações detalhadas de um arquivo ou diretório (tamanho, data
       de criação, última modificação, etc.).
 - [ ] du diretorio: Exibir o tamanho do diretório em bytes
 

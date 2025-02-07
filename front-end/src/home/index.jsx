@@ -33,6 +33,12 @@ const Terminal = () => {
     const trimmedCommand = command.trim();
     if (trimmedCommand) {
 
+      if(trimmedCommand == 'clear'){
+        setOutput('Bem-vindo SO-Corro Terminal!\n');
+        setCommand('');
+        return null;
+      }
+
 
       console.log('Comando digitado:', trimmedCommand);
       // Separando o comando e o argumento

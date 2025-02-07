@@ -1,16 +1,26 @@
-export default class Usuario {
-  constructor(nome, admin) {
-    this.nome = nome;
-    this.admin = admin;
-  }
+import Diretorio from "./Diretorio.js";
 
-  mudaNome(novoNome) {
-    this.nome = novoNome;
-    return "Nome alterado com sucesso";
-  }
+class Usuario {
+    constructor(nome, id){
+        this.nome = nome;
+        const nome_pasta = nome.split(" ").join(".").toLowerCase();
+        this.pasta_usuario = new Diretorio(nome_pasta);
+        this.id = id;
+    }
+    mudaNome(novoNome){
+        this.nome = novoNome;
+        return 'nome alterado com sucesso';
+    }
 
-  setAdmin(isAdmin) {
-    // true ou false
-    this.admin = isAdmin;
-  }
+    getPastaUsuario(pai){
+        this.pasta_usuario.diretorioPai = pai;
+        return this.pasta_usuario;
+    }
+
+    getInfo(){
+        let result = `Nome: ${this.nome}\nID: ${this.id}`;
+        return result;
+    }
 }
+
+export default Usuario;
