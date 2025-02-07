@@ -2,6 +2,7 @@ class Arquivo {
   constructor(nome, conteudo = "") {
     this.nome = nome;
     this.conteudo = conteudo;
+    this.data_modificacao = Date.now();
     // this.usuariosPermitidos = [];
     // this.usuariosPermitidos.push(usuariosPermitidos);//lista de usuários permitidos
     //Permissão podemos inserir como atributo dessa classe, criando uma nova classe 'usuario' e inserindo cada usuário nessa lista de usuários permitidos
