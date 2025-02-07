@@ -1,8 +1,9 @@
 class Arquivo {
-  constructor(nome, conteudo = "") {
+  constructor(nome, conteudo = "", proprietario) {
     this.nome = nome;
     this.conteudo = conteudo;
     this.data_modificacao = Date.now();
+    this.owner = proprietario;
     // this.usuariosPermitidos = [];
     // this.usuariosPermitidos.push(usuariosPermitidos);//lista de usuários permitidos
     //Permissão podemos inserir como atributo dessa classe, criando uma nova classe 'usuario' e inserindo cada usuário nessa lista de usuários permitidos
@@ -19,18 +20,21 @@ class Arquivo {
   read() {
     return this.conteudo;
   }
-    updateNome(nome){
-        this.nome = nome;
-    }
+  updateNome(nome) {
+    this.nome = nome;
+  }
 
+  mudarProprietario(prop){
+    this.owner = prop;
+  }
 
-    getStats() {
-        return {
-            nome: this.nome,
-            size: this.conteudo.length,
-            lines: this.conteudo.split('\n').length
-        };
-    }
+  getStats() {
+    return `Nome: ${this.nome}\nProprietário: ${this.owner.nome}`
+  }
+
+  getTamanho() {
+    return sizeof(this)
+  }
 }
 
 export default Arquivo;

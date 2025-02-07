@@ -55,6 +55,8 @@ const comandoService = {
         return comandoService.adduser(args.name);
       case "save":
         return comandoService.save();
+      case "chown":
+        return comandoService.getuser(args.name);
       default:
         return { success: false, message: "Comando inválido!" };
     }
@@ -171,15 +173,19 @@ const comandoService = {
 
   getFileStats: (name) => {
     if (!name) {
-      return { success: false, message: "Nome do arquivo obrigatório." };
+      return { success: false, message: "Nome do arquivo/diretorio obrigatório." };
     }
 
     const file = comandoService.root.arquivos.find((f) => f.nome === name);
-    if (!file) {
-      return { success: false, message: `Arquivo '${name}' não existe` };
+    if (file) {
+      return { success: true, message: file.getStats()};
     }
-    const stats = file.getStats();
-    return { success: true, stats };
+
+    const dir = comandoService.root.subpastas.find((f) => f.nome === name);
+    if (dir) {
+      return { success: true, message: dir.getStats()};
+    }
+    return { success: true, message:`Arquivo ou diretorio ${name} não encontrado` };
   },
 
   findDirectory: (name) => {
@@ -460,7 +466,7 @@ const comandoService = {
     console.log(pastaUsuarios);
     console.log(usuario);
     return { success: true, message: "usuario criado com sucesso" }
-    
+
   },
 
   save: () => {
@@ -491,12 +497,49 @@ const comandoService = {
     criarDiretorio(comandoService.root.get_root(), caminhoBase);
 
     return { success: true, message: "Arquivos salvos com sucesso localmente." }
-  }
+  },
 
-  // getuser: (username) =>{
-  //   const pastaUsuarios = comandoService.root.get_root().subpastas.find((pasta) => pasta.nome === 'usuarios');
-  //   const pastaUsuarios = comandoService.root.get_root().subpastas.find((pasta) => pasta.nome === 'usuarios');
-  // }
+  getuser: (args) => {
+    let args_arr = args.split(" ");
+    let dirname = args_arr.pop();
+    let username = args_arr.join(" ")
+    console.log(username)
+
+    const pastaUsuarios = comandoService.root.get_root().subpastas.find((pasta) => pasta.nome === 'usuarios').subpastas;
+    let userFound = false;
+    var count = 0;
+    let usr = null;
+    while (!userFound) {
+      if (pastaUsuarios.length <= count) {
+        return { success: false, message: "Usuário não encontrado" }
+      }
+      let handle_usr = pastaUsuarios.at(count);
+      let arq_usr = handle_usr.arquivos.find(
+        (arquivo) => arquivo.nome === handle_usr.nome + '.txt');
+      let name_arr = arq_usr.conteudo.split("\n").at(0).split(' ')
+      name_arr.shift();
+      let nome_usr = (name_arr.join(" "));
+      let id_usr = (arq_usr.conteudo.split("\n").at(1).split(' ').at(1));
+      count++;
+      userFound = true ? nome_usr == username : false;
+      usr = new Usuario(nome_usr, id_usr)
+      console.log(usr)
+    }
+
+    const dir = comandoService.findDirectory(dirname);
+    if (dir instanceof Diretorio) {
+      dir.mudarProprietario(usr);
+      return { success: true, message: "Proprietário do diretório alterado com sucesso" };
+    } else {
+      const arq = comandoService.findArquivo(dirname);
+      if (arq instanceof Arquivo) {
+        arq.mudarProprietario(usr);
+        return { success: true, message: "Proprietário do arquivo alterado com sucesso" }
+
+      }
+      return { success: false, message: "Diretorio ou arquivo não encontrado" }
+    }
+  }
 };
 
 export default comandoService;
