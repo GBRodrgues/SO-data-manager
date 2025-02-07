@@ -52,7 +52,7 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 
 #### Operações Avançadas:
 
-- [ ] cp origem destino: Copiar arquivos ou diretórios.
+- [x] cp origem destino: Copiar arquivos ou diretórios.
 - [ ] mv origem destino: Mover arquivos ou diretórios para outra localização.
 - [ ] diff arquivo1 arquivo2: Comparar dois arquivos e exibir as diferenças.
 - [ ] zip arquivo.zip itens: Compactar arquivos ou diretórios em um arquivo `.zip`
