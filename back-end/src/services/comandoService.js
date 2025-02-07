@@ -551,60 +551,8 @@ const comandoService = {
       }
       return { success: false, message: "Diretorio ou arquivo não encontrado" }
     }
-  }
-
-  //adicionando um novo usuário na pasta usr
-  adduser: (username) => {
-    const pastaUsuarios = comandoService.root
-      .get_root()
-      .subpastas.find((pasta) => pasta.nome === "usuarios");
-    const n_usuarios = pastaUsuarios.subpastas.length;
-    const usuario = new Usuario(username, n_usuarios + 1);
-
-    const subpasta_usuario = usuario.getPastaUsuario(pastaUsuarios);
-    const arquivo_usuario = new Arquivo(
-      subpasta_usuario.nome + ".txt",
-      usuario.getInfo()
-    );
-    subpasta_usuario.addArquivo(arquivo_usuario);
-    pastaUsuarios.addSubPasta(subpasta_usuario);
-    console.log(pastaUsuarios);
-    console.log(usuario);
-    return { success: true, message: "usuario criado com sucesso" };
   },
-
-  save: () => {
-    let caminhoBase = "./sistema_arquivos";
-    if (!fs.existsSync(caminhoBase)) {
-      fs.mkdirSync(caminhoBase, { recursive: true });
-    }
-
-    function criarDiretorio(diretorio, caminhoAtual) {
-      const caminhoDiretorio = path.join(caminhoAtual, diretorio.nome);
-
-      if (!fs.existsSync(caminhoDiretorio)) {
-        fs.mkdirSync(caminhoDiretorio, { recursive: true });
-      }
-
-      // Criar arquivos no diretório
-      diretorio.arquivos.forEach((arquivo) => {
-        const caminhoArquivo = path.join(caminhoDiretorio, arquivo.nome);
-        fs.writeFileSync(caminhoArquivo, arquivo.conteudo);
-      });
-
-      // Criar subdiretórios recursivamente
-      diretorio.subpastas.forEach((subpasta) => {
-        criarDiretorio(subpasta, caminhoDiretorio);
-      });
-    }
-
-    criarDiretorio(comandoService.root.get_root(), caminhoBase);
-
-    return {
-      success: true,
-      message: "Arquivos salvos com sucesso localmente.",
-    };
-  },
+  
   find: (input) => {
     // Divide o input para extrair o tipo de busca (diretório ou arquivo) e o nome
     const [tipo, nome] = input.split(" ").map((item) => item.trim());
