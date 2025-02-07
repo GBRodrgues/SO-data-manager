@@ -1,5 +1,8 @@
 import Diretorio from "../models/Diretorio.js";
 import Arquivo from "../models/Arquivo.js";
+import Usuario from "../models/Usuario.js";
+import fs from "fs";
+import path from "path";
 
 const comandoService = {
   // Inicializando um diretório raiz para simular um sistema de arquivos
@@ -51,6 +54,10 @@ const comandoService = {
               'Formato inválido. Use: echo "texto" > arquivo.txt ou echo "texto" >> arquivo.txt',
           };
         }
+      case "adduser":
+        return comandoService.adduser(args.name);
+      case "save":
+        return comandoService.save();
       default:
         return { success: false, message: "Comando inválido!" };
     }
@@ -145,21 +152,21 @@ const comandoService = {
             pasta_atual = diretorio;
           } else {
             pasta_atual = null;
+            return null;
           }
         }
       }
       if (pasta_atual) {
         comandoService.root = pasta_atual; // se encontrar a pasta da repetição, muda o root para essa
       } else {
-        return {
-          success: false,
-          message: `Não foi possível encontrar o diretório ${path}`,
-        }; // se deparar com uma pasta vazia, cancela a busca
+        return null;
       }
     });
     //se tiver verificado todas as pastas do caminho, e tiver econtrado. Retorna succes
     if (comandoService.root) {
       return { success: true, message: `Diretório alterado para ${path}` };
+    } else {
+      return { success: false, message: `Diretório ${path} não encontrado` };
     }
   },
 
@@ -259,33 +266,37 @@ const comandoService = {
     //incializa a resposta com o nome da pasta raiz
     let result = root.nome;
 
-    const printTree = (dir, prefix = '', string_final) => {
-        const subpastas = dir.subpastas;
-        const arquivos = dir.arquivos ;
-        console.log(string_final)
-        const total = subpastas.length + arquivos.length;
-        
-        subpastas.forEach((pasta, index) => {
-            const isLast = index === total - 1;
-            console.log(isLast);
-            string_final = string_final.concat(prefix + (isLast ? '└── ' : '├── ') + pasta.nome+'\n');
-            string_final = printTree(pasta, prefix + (isLast ? '    ' : '│   '), string_final);
-        });
-        
-        arquivos.forEach((arquivo, index) => {
-            console.log('auhdusadh')
-            console.log(arquivo)
-            const isLast = index === arquivos.length - 1;
-            console.log(isLast);
-            string_final = string_final.concat(prefix + (isLast ? '└── ' : '├── ') + arquivo.nome+'\n');
-        });
-        return string_final;
+    const printTree = (dir, prefix = "", string_final) => {
+      //funcao para criar arvore
+      const subpastas = dir.subpastas;
+      const arquivos = dir.arquivos;
+      const total = subpastas.length + arquivos.length;
+
+      subpastas.forEach((pasta, index) => {
+        //para cada pasta do diretorio
+        const isLast = index === total - 1; //se o indice for o último da pasta
+        string_final = string_final.concat(
+          prefix + (isLast ? "└── " : "├── ") + pasta.nome + "\n"
+        ); //exibe o nome da subpasta
+        string_final = printTree(
+          pasta,
+          prefix + (isLast ? "    " : "│   "),
+          string_final
+        ); //recursivamente, exibe o conteudo da subpasta
+      });
+
+      arquivos.forEach((arquivo, index) => {
+        const isLast = index === arquivos.length - 1; //verifica se é o último arquivo da pasta
+        string_final = string_final.concat(
+          prefix + (isLast ? "└── " : "├── ") + arquivo.nome + "\n"
+        ); //exibe o arquivo
+      });
+      return string_final;
     };
-    
-    result = printTree(root, '', result+'\n');
-    console.log(result);
-    return {success:true, message:result};
-},
+
+    result = printTree(root, "", result + "\n");
+    return { success: true, message: result };
+  },
 
   writeFile: (input) => {
     // Separar o texto e o nome do arquivo
@@ -455,6 +466,64 @@ const comandoService = {
       message: `Arquivo '${arquivoNome}':\nLinhas: ${numLinhas}\nPalavras: ${numPalavras}\nCaracteres: ${numCaracteres}`,
     };
   },
+
+  //adicionando um novo usuário na pasta usr
+  adduser: (username) => {
+    const pastaUsuarios = comandoService.root
+      .get_root()
+      .subpastas.find((pasta) => pasta.nome === "usuarios");
+    const n_usuarios = pastaUsuarios.subpastas.length;
+    const usuario = new Usuario(username, n_usuarios + 1);
+
+    const subpasta_usuario = usuario.getPastaUsuario(pastaUsuarios);
+    const arquivo_usuario = new Arquivo(
+      subpasta_usuario.nome + ".txt",
+      usuario.getInfo()
+    );
+    subpasta_usuario.addArquivo(arquivo_usuario);
+    pastaUsuarios.addSubPasta(subpasta_usuario);
+    console.log(pastaUsuarios);
+    console.log(usuario);
+    return { success: true, message: "usuario criado com sucesso" };
+  },
+
+  save: () => {
+    let caminhoBase = "./sistema_arquivos";
+    if (!fs.existsSync(caminhoBase)) {
+      fs.mkdirSync(caminhoBase, { recursive: true });
+    }
+
+    function criarDiretorio(diretorio, caminhoAtual) {
+      const caminhoDiretorio = path.join(caminhoAtual, diretorio.nome);
+
+      if (!fs.existsSync(caminhoDiretorio)) {
+        fs.mkdirSync(caminhoDiretorio, { recursive: true });
+      }
+
+      // Criar arquivos no diretório
+      diretorio.arquivos.forEach((arquivo) => {
+        const caminhoArquivo = path.join(caminhoDiretorio, arquivo.nome);
+        fs.writeFileSync(caminhoArquivo, arquivo.conteudo);
+      });
+
+      // Criar subdiretórios recursivamente
+      diretorio.subpastas.forEach((subpasta) => {
+        criarDiretorio(subpasta, caminhoDiretorio);
+      });
+    }
+
+    criarDiretorio(comandoService.root.get_root(), caminhoBase);
+
+    return {
+      success: true,
+      message: "Arquivos salvos com sucesso localmente.",
+    };
+  },
+
+  // getuser: (username) =>{
+  //   const pastaUsuarios = comandoService.root.get_root().subpastas.find((pasta) => pasta.nome === 'usuarios');
+  //   const pastaUsuarios = comandoService.root.get_root().subpastas.find((pasta) => pasta.nome === 'usuarios');
+  // }
 };
 
 export default comandoService;
