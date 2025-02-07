@@ -25,6 +25,7 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 - [x] wc arquivo: Mostrar o número de linhas, palavras e caracteres de um arquivo
 
 #### Navegação entre Diretórios:
+
 - [x] cd nome: Navegar para um diretório específico.
 - [x] cd ..: Voltar ao diretório anterior.
 - [x] cd /: Ir para o diretório raiz.
@@ -32,9 +33,9 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 
 #### Busca e Filtragem:
 
-- [ ] find diretorio -name nome: Procurar arquivos ou diretórios pelo nome em uma
+- [x] find diretorio -name nome: Procurar arquivos ou diretórios pelo nome em uma
       hierarquia.
-- [ ] grep termo arquivo: Procurar por uma palavra ou frase dentro de um arquivo.
+- [x] grep termo arquivo: Procurar por uma palavra ou frase dentro de um arquivo.
 
 #### Permissões e Propriedades (Simuladas):
 
@@ -59,6 +60,7 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 - [ ] unzip arquivo.zip: Descompactar um arquivo `.zip`
 
 #### Extras:
+
 - [x] history: Exibir os últimos comandos digitados.
 
 ## Front End

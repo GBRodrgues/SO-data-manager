@@ -58,6 +58,10 @@ const comandoService = {
         return comandoService.adduser(args.name);
       case "save":
         return comandoService.save();
+      case "find":
+        return comandoService.find(args.name);
+      case "grep":
+        return comandoService.grep(args.name);
       default:
         return { success: false, message: "Comando inválido!" };
     }
@@ -518,6 +522,169 @@ const comandoService = {
       success: true,
       message: "Arquivos salvos com sucesso localmente.",
     };
+  },
+  find: (input) => {
+    // Divide o input para extrair o tipo de busca (diretório ou arquivo) e o nome
+    const [tipo, nome] = input.split(" ").map((item) => item.trim());
+
+    if (!tipo || !nome) {
+      return {
+        success: false,
+        message:
+          "Formato inválido. Use: find directory nome ou find arquivo nome",
+      };
+    }
+
+    if (tipo === "dir") {
+      const resultado = comandoService.findDir(comandoService.root, nome);
+      if (resultado) {
+        return {
+          success: true,
+          message: `Diretório encontrado: ${resultado.caminho}`,
+        };
+      } else {
+        return {
+          success: false,
+          message: `Diretório '${nome}' não encontrado.`,
+        };
+      }
+    } else if (tipo === "arq") {
+      const resultado = comandoService.findArq(comandoService.root, nome);
+      if (resultado) {
+        return {
+          success: true,
+          message: `Arquivo encontrado: ${resultado.caminho}`,
+        };
+      } else {
+        return { success: false, message: `Arquivo '${nome}' não encontrado.` };
+      }
+    } else {
+      return {
+        success: false,
+        message:
+          "Tipo de busca inválido. Use: find directory nome ou find arquivo nome",
+      };
+    }
+  },
+
+  findDir: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o diretório atual é o que estamos procurando
+    if (diretorioAtual.nome === nome) {
+      return { nome: diretorioAtual.nome, caminho };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findDir(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
+  },
+
+  findArq: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o arquivo está no diretório atual
+    const arquivo = diretorioAtual.arquivos.find(
+      (arquivo) => arquivo.nome === nome
+    );
+    if (arquivo) {
+      return { nome: arquivo.nome, caminho: `${caminho}/${arquivo.nome}` };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findArq(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
+  },
+  grep: (input) => {
+    // Divide o input para extrair o termo e o nome do arquivo
+    const [termo, arquivoNome] = input.split(" ").map((item) => item.trim());
+
+    if (!termo || !arquivoNome) {
+      return {
+        success: false,
+        message: "Formato inválido. Use: grep termo arquivo",
+      };
+    }
+
+    // Encontra o arquivo
+    const arquivo = comandoService.findArq2(comandoService.root, arquivoNome);
+    if (!arquivo) {
+      return {
+        success: false,
+        message: `Arquivo '${arquivoNome}' não encontrado.`,
+      };
+    }
+
+    // Lê o conteúdo do arquivo
+    const conteudo = arquivo.conteudo;
+
+    // Divide o conteúdo em linhas
+    const linhas = conteudo.split("\n");
+
+    // Filtra as linhas que contêm o termo
+    const linhasEncontradas = linhas.filter((linha) => linha.includes(termo));
+
+    if (linhasEncontradas.length === 0) {
+      return {
+        success: true,
+        message: `Nenhuma linha encontrada com o termo '${termo}'.`,
+      };
+    } else {
+      return {
+        success: true,
+        message: `Linhas encontradas:\n${linhasEncontradas.join("\n")}`,
+      };
+    }
+  },
+
+  findArq2: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o arquivo está no diretório atual
+    const arquivo = diretorioAtual.arquivos.find(
+      (arquivo) => arquivo.nome === nome
+    );
+    if (arquivo) {
+      return {
+        nome: arquivo.nome,
+        caminho: `${caminho}/${arquivo.nome}`,
+        conteudo: arquivo.conteudo,
+      };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findArq2(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
   },
 
   // getuser: (username) =>{
