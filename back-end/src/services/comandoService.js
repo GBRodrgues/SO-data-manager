@@ -1,7 +1,7 @@
 import Diretorio from "../models/Diretorio.js";
 import Arquivo from "../models/Arquivo.js";
-import Usuario from "../models/Usuario.js"
-import fs from "fs"
+import Usuario from "../models/Usuario.js";
+import fs from "fs";
 import path from "path";
 
 const comandoService = {
@@ -51,6 +51,18 @@ const comandoService = {
               'Formato inválido. Use: echo "texto" > arquivo.txt ou echo "texto" >> arquivo.txt',
           };
         }
+      case "adduser":
+        return comandoService.adduser(args.name);
+      case "save":
+        return comandoService.save();
+      case "find":
+        return comandoService.find(args.name);
+      case "grep":
+        return comandoService.grep(args.name);
+      case "cp":
+        return comandoService.cp(args.name);
+      case "mv":
+        return comandoService.mv(args.name); // Novo comando mv
       case "adduser":
         return comandoService.adduser(args.name);
       case "save":
@@ -149,21 +161,21 @@ const comandoService = {
             pasta_atual = diretorio;
           } else {
             pasta_atual = null;
-            return null
+            return null;
           }
         }
       }
       if (pasta_atual) {
         comandoService.root = pasta_atual; // se encontrar a pasta da repetição, muda o root para essa
       } else {
-        return null
+        return null;
       }
     });
     //se tiver verificado todas as pastas do caminho, e tiver econtrado. Retorna succes
     if (pasta_atual != null) {
       return { success: true, message: `Diretório alterado para ${path}` };
     } else {
-      return { success: false, message: `Diretório ${path} não encontrado` }
+      return { success: false, message: `Diretório ${path} não encontrado` };
     }
   },
 
@@ -539,7 +551,426 @@ const comandoService = {
       }
       return { success: false, message: "Diretorio ou arquivo não encontrado" }
     }
-  }
+  },
+  
+  find: (input) => {
+    // Divide o input para extrair o tipo de busca (diretório ou arquivo) e o nome
+    const [tipo, nome] = input.split(" ").map((item) => item.trim());
+
+    if (!tipo || !nome) {
+      return {
+        success: false,
+        message:
+          "Formato inválido. Use: find directory nome ou find arquivo nome",
+      };
+    }
+
+    if (tipo === "dir") {
+      const resultado = comandoService.findDir(comandoService.root, nome);
+      if (resultado) {
+        return {
+          success: true,
+          message: `Diretório encontrado: ${resultado.caminho}`,
+        };
+      } else {
+        return {
+          success: false,
+          message: `Diretório '${nome}' não encontrado.`,
+        };
+      }
+    } else if (tipo === "arq") {
+      const resultado = comandoService.findArq(comandoService.root, nome);
+      if (resultado) {
+        return {
+          success: true,
+          message: `Arquivo encontrado: ${resultado.caminho}`,
+        };
+      } else {
+        return { success: false, message: `Arquivo '${nome}' não encontrado.` };
+      }
+    } else {
+      return {
+        success: false,
+        message:
+          "Tipo de busca inválido. Use: find directory nome ou find arquivo nome",
+      };
+    }
+  },
+
+  findDir: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o diretório atual é o que estamos procurando
+    if (diretorioAtual.nome === nome) {
+      return { nome: diretorioAtual.nome, caminho };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findDir(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
+  },
+
+  findArq: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o arquivo está no diretório atual
+    const arquivo = diretorioAtual.arquivos.find(
+      (arquivo) => arquivo.nome === nome
+    );
+    if (arquivo) {
+      return { nome: arquivo.nome, caminho: `${caminho}/${arquivo.nome}` };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findArq(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
+  },
+  grep: (input) => {
+    // Divide o input para extrair o termo e o nome do arquivo
+    const [termo, arquivoNome] = input.split(" ").map((item) => item.trim());
+
+    if (!termo || !arquivoNome) {
+      return {
+        success: false,
+        message: "Formato inválido. Use: grep termo arquivo",
+      };
+    }
+
+    // Encontra o arquivo
+    const arquivo = comandoService.findArq2(comandoService.root, arquivoNome);
+    if (!arquivo) {
+      return {
+        success: false,
+        message: `Arquivo '${arquivoNome}' não encontrado.`,
+      };
+    }
+
+    // Lê o conteúdo do arquivo
+    const conteudo = arquivo.conteudo;
+
+    // Divide o conteúdo em linhas
+    const linhas = conteudo.split("\n");
+
+    // Filtra as linhas que contêm o termo
+    const linhasEncontradas = linhas.filter((linha) => linha.includes(termo));
+
+    if (linhasEncontradas.length === 0) {
+      return {
+        success: true,
+        message: `Nenhuma linha encontrada com o termo '${termo}'.`,
+      };
+    } else {
+      return {
+        success: true,
+        message: `Linhas encontradas:\n${linhasEncontradas.join("\n")}`,
+      };
+    }
+  },
+
+  findArq2: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o arquivo está no diretório atual
+    const arquivo = diretorioAtual.arquivos.find(
+      (arquivo) => arquivo.nome === nome
+    );
+    if (arquivo) {
+      return {
+        nome: arquivo.nome,
+        caminho: `${caminho}/${arquivo.nome}`,
+        conteudo: arquivo.conteudo,
+      };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findArq2(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
+  },
+  cp: (input) => {
+    // Divide o input para extrair a origem e o destino
+    const [origem, destino] = input.split(" ").map((item) => item.trim());
+
+    if (!origem || !destino) {
+      return {
+        success: false,
+        message: "Formato inválido. Use: cp origem destino",
+      };
+    }
+
+    // Encontra o arquivo ou diretório de origem
+    const arquivoOrigem = comandoService.findArq3(comandoService.root, origem);
+    const diretorioOrigem = comandoService.findDir3(
+      comandoService.root,
+      origem
+    );
+
+    if (!arquivoOrigem && !diretorioOrigem) {
+      return { success: false, message: `Origem '${origem}' não encontrada.` };
+    }
+
+    // Encontra o diretório de destino
+    const diretorioDestino = comandoService.findDir3(
+      comandoService.root,
+      destino
+    );
+    if (!diretorioDestino) {
+      return {
+        success: false,
+        message: `Destino '${destino}' não encontrado.`,
+      };
+    }
+
+    // Copia o arquivo ou diretório
+    if (arquivoOrigem) {
+      const novoArquivo = new Arquivo(arquivoOrigem.nome);
+      novoArquivo.conteudo = arquivoOrigem.conteudo;
+      novoArquivo.permissoes = arquivoOrigem.permissoes;
+      novoArquivo.proprietario = arquivoOrigem.proprietario;
+      diretorioDestino.arquivos.push(novoArquivo);
+      return {
+        success: true,
+        message: `Arquivo '${origem}' copiado para '${destino}'.`,
+      };
+    } else if (diretorioOrigem) {
+      const novoDiretorio = new Diretorio(diretorioOrigem.nome);
+      novoDiretorio.arquivos = [...diretorioOrigem.arquivos];
+      novoDiretorio.subpastas = [...diretorioOrigem.subpastas];
+      novoDiretorio.permissoes = diretorioOrigem.permissoes;
+      novoDiretorio.proprietario = diretorioOrigem.proprietario;
+      diretorioDestino.subpastas.push(novoDiretorio);
+      return {
+        success: true,
+        message: `Diretório '${origem}' copiado para '${destino}'.`,
+      };
+    }
+  },
+
+  findArq3: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o arquivo está no diretório atual
+    const arquivo = diretorioAtual.arquivos.find(
+      (arquivo) => arquivo.nome === nome
+    );
+    if (arquivo) {
+      return {
+        nome: arquivo.nome,
+        caminho: `${caminho}/${arquivo.nome}`,
+        conteudo: arquivo.conteudo,
+        permissoes: arquivo.permissoes,
+        proprietario: arquivo.proprietario,
+      };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findArq3(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
+  },
+
+  findDir3: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o diretório atual é o que estamos procurando
+    if (diretorioAtual.nome === nome) {
+      return {
+        nome: diretorioAtual.nome,
+        caminho,
+        permissoes: diretorioAtual.permissoes,
+        proprietario: diretorioAtual.proprietario,
+        arquivos: diretorioAtual.arquivos,
+        subpastas: diretorioAtual.subpastas,
+      };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findDir3(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
+  },
+  mv: (input) => {
+    // Divide o input para extrair a origem e o destino
+    const [origem, destino] = input.split(" ").map((item) => item.trim());
+
+    if (!origem || !destino) {
+      return {
+        success: false,
+        message: "Formato inválido. Use: mv origem destino",
+      };
+    }
+
+    // Encontra o arquivo ou diretório de origem
+    const arquivoOrigem = comandoService.findArq4(comandoService.root, origem);
+    const diretorioOrigem = comandoService.findDir4(
+      comandoService.root,
+      origem
+    );
+
+    if (!arquivoOrigem && !diretorioOrigem) {
+      return { success: false, message: `Origem '${origem}' não encontrada.` };
+    }
+
+    // Encontra o diretório de destino
+    const diretorioDestino = comandoService.findDir4(
+      comandoService.root,
+      destino
+    );
+    if (!diretorioDestino) {
+      return {
+        success: false,
+        message: `Destino '${destino}' não encontrado.`,
+      };
+    }
+
+    // Move o arquivo ou diretório
+    if (arquivoOrigem) {
+      // Remove o arquivo da origem
+      const diretorioOrigemArquivo = comandoService.findDir4(
+        comandoService.root,
+        origem.split("/").slice(0, -1).join("/")
+      );
+      diretorioOrigemArquivo.arquivos = diretorioOrigemArquivo.arquivos.filter(
+        (arquivo) => arquivo.nome !== arquivoOrigem.nome
+      );
+
+      // Adiciona o arquivo ao destino
+      diretorioDestino.arquivos.push(arquivoOrigem);
+      return {
+        success: true,
+        message: `Arquivo '${origem}' movido para '${destino}'.`,
+      };
+    } else if (diretorioOrigem) {
+      // Remove o diretório da origem
+      const diretorioOrigemPai = comandoService.findDir4(
+        comandoService.root,
+        origem.split("/").slice(0, -1).join("/")
+      );
+      diretorioOrigemPai.subpastas = diretorioOrigemPai.subpastas.filter(
+        (subdir) => subdir.nome !== diretorioOrigem.nome
+      );
+
+      // Adiciona o diretório ao destino
+      diretorioDestino.subpastas.push(diretorioOrigem);
+      return {
+        success: true,
+        message: `Diretório '${origem}' movido para '${destino}'.`,
+      };
+    }
+  },
+
+  findArq4: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o arquivo está no diretório atual
+    const arquivo = diretorioAtual.arquivos.find(
+      (arquivo) => arquivo.nome === nome
+    );
+    if (arquivo) {
+      return {
+        nome: arquivo.nome,
+        caminho: `${caminho}/${arquivo.nome}`,
+        conteudo: arquivo.conteudo,
+        permissoes: arquivo.permissoes,
+        proprietario: arquivo.proprietario,
+      };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findArq4(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
+  },
+
+  findDir4: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o diretório atual é o que estamos procurando
+    if (diretorioAtual.nome === nome) {
+      return {
+        nome: diretorioAtual.nome,
+        caminho,
+        permissoes: diretorioAtual.permissoes,
+        proprietario: diretorioAtual.proprietario,
+        arquivos: diretorioAtual.arquivos,
+        subpastas: diretorioAtual.subpastas,
+      };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findDir4(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
+  },
+  // getuser: (username) =>{
+  //   const pastaUsuarios = comandoService.root.get_root().subpastas.find((pasta) => pasta.nome === 'usuarios');
+  //   const pastaUsuarios = comandoService.root.get_root().subpastas.find((pasta) => pasta.nome === 'usuarios');
+  // }
 };
 
 export default comandoService;
