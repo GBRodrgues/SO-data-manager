@@ -13,7 +13,7 @@ class Diretorio {
         var rootDir = new Diretorio('~', null);
         let hello_world = new Arquivo('hello_world.txt','Olá\nArquivo de testes!');
         rootDir.addArquivo(hello_world);
-        let usr = new Diretorio('usr', rootDir);
+        let usr = new Diretorio('usuarios', rootDir);
         rootDir.addSubPasta(usr);
         return rootDir;
     }
