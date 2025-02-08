@@ -54,10 +54,10 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 
 - [x] cp origem destino: Copiar arquivos ou diretórios.
 - [ ] mv origem destino: Mover arquivos ou diretórios para outra localização.
-- [ ] diff arquivo1 arquivo2: Comparar dois arquivos e exibir as diferenças.
-- [ ] zip arquivo.zip itens: Compactar arquivos ou diretórios em um arquivo `.zip`
+- [x] diff arquivo1 arquivo2: Comparar dois arquivos e exibir as diferenças.
+- [x] zip arquivo.zip itens: Compactar arquivos ou diretórios em um arquivo `.zip`
       (simulado).
-- [ ] unzip arquivo.zip: Descompactar um arquivo `.zip`
+- [x] unzip arquivo.zip: Descompactar um arquivo `.zip`
 
 #### Extras:
 

@@ -69,6 +69,12 @@ const comandoService = {
         return comandoService.save();
       case "chown":
         return comandoService.getuser(args.name);
+      case "diff":
+        return comandoService.diff(args.name);
+      case "zip":
+        return comandoService.zip(args.name);
+      case "unzip":
+        return comandoService.unzip(args.name);
       default:
         return { success: false, message: "Comando inválido!" };
     }
@@ -185,19 +191,25 @@ const comandoService = {
 
   getFileStats: (name) => {
     if (!name) {
-      return { success: false, message: "Nome do arquivo/diretorio obrigatório." };
+      return {
+        success: false,
+        message: "Nome do arquivo/diretorio obrigatório.",
+      };
     }
 
     const file = comandoService.root.arquivos.find((f) => f.nome === name);
     if (file) {
-      return { success: true, message: file.getStats()};
+      return { success: true, message: file.getStats() };
     }
 
     const dir = comandoService.root.subpastas.find((f) => f.nome === name);
     if (dir) {
-      return { success: true, message: dir.getStats()};
+      return { success: true, message: dir.getStats() };
     }
-    return { success: true, message:`Arquivo ou diretorio ${name} não encontrado` };
+    return {
+      success: true,
+      message: `Arquivo ou diretorio ${name} não encontrado`,
+    };
   },
 
   findDirectory: (name) => {
@@ -274,25 +286,35 @@ const comandoService = {
     //incializa a resposta com o nome da pasta raiz
     let result = root.nome;
 
-    const printTree = (dir, prefix = '', string_final) => { //funcao para criar arvore
+    const printTree = (dir, prefix = "", string_final) => {
+      //funcao para criar arvore
       const subpastas = dir.subpastas;
       const arquivos = dir.arquivos;
       const total = subpastas.length + arquivos.length;
 
-      subpastas.forEach((pasta, index) => { //para cada pasta do diretorio
+      subpastas.forEach((pasta, index) => {
+        //para cada pasta do diretorio
         const isLast = index === total - 1; //se o indice for o último da pasta
-        string_final = string_final.concat(prefix + (isLast ? '└── ' : '├── ') + pasta.nome + '\n'); //exibe o nome da subpasta
-        string_final = printTree(pasta, prefix + (isLast ? '    ' : '│   '), string_final); //recursivamente, exibe o conteudo da subpasta
+        string_final = string_final.concat(
+          prefix + (isLast ? "└── " : "├── ") + pasta.nome + "\n"
+        ); //exibe o nome da subpasta
+        string_final = printTree(
+          pasta,
+          prefix + (isLast ? "    " : "│   "),
+          string_final
+        ); //recursivamente, exibe o conteudo da subpasta
       });
 
       arquivos.forEach((arquivo, index) => {
         const isLast = index === arquivos.length - 1; //verifica se é o último arquivo da pasta
-        string_final = string_final.concat(prefix + (isLast ? '└── ' : '├── ') + arquivo.nome + '\n'); //exibe o arquivo
+        string_final = string_final.concat(
+          prefix + (isLast ? "└── " : "├── ") + arquivo.nome + "\n"
+        ); //exibe o arquivo
       });
       return string_final;
     };
 
-    result = printTree(root, '', result + '\n');
+    result = printTree(root, "", result + "\n");
     return { success: true, message: result };
   },
 
@@ -467,22 +489,26 @@ const comandoService = {
 
   //adicionando um novo usuário na pasta usr
   adduser: (username) => {
-    const pastaUsuarios = comandoService.root.get_root().subpastas.find((pasta) => pasta.nome === 'usuarios');
+    const pastaUsuarios = comandoService.root
+      .get_root()
+      .subpastas.find((pasta) => pasta.nome === "usuarios");
     const n_usuarios = pastaUsuarios.subpastas.length;
-    const usuario = new Usuario(username, n_usuarios + 1)
+    const usuario = new Usuario(username, n_usuarios + 1);
 
     const subpasta_usuario = usuario.getPastaUsuario(pastaUsuarios);
-    const arquivo_usuario = new Arquivo(subpasta_usuario.nome + '.txt', usuario.getInfo());
+    const arquivo_usuario = new Arquivo(
+      subpasta_usuario.nome + ".txt",
+      usuario.getInfo()
+    );
     subpasta_usuario.addArquivo(arquivo_usuario);
     pastaUsuarios.addSubPasta(subpasta_usuario);
     console.log(pastaUsuarios);
     console.log(usuario);
-    return { success: true, message: "usuario criado com sucesso" }
-
+    return { success: true, message: "usuario criado com sucesso" };
   },
 
   save: () => {
-    let caminhoBase = "./sistema_arquivos"
+    let caminhoBase = "./sistema_arquivos";
     if (!fs.existsSync(caminhoBase)) {
       fs.mkdirSync(caminhoBase, { recursive: true });
     }
@@ -508,51 +534,62 @@ const comandoService = {
 
     criarDiretorio(comandoService.root.get_root(), caminhoBase);
 
-    return { success: true, message: "Arquivos salvos com sucesso localmente." }
+    return {
+      success: true,
+      message: "Arquivos salvos com sucesso localmente.",
+    };
   },
 
   getuser: (args) => {
     let args_arr = args.split(" ");
     let dirname = args_arr.pop();
-    let username = args_arr.join(" ")
-    console.log(username)
+    let username = args_arr.join(" ");
+    console.log(username);
 
-    const pastaUsuarios = comandoService.root.get_root().subpastas.find((pasta) => pasta.nome === 'usuarios').subpastas;
+    const pastaUsuarios = comandoService.root
+      .get_root()
+      .subpastas.find((pasta) => pasta.nome === "usuarios").subpastas;
     let userFound = false;
     var count = 0;
     let usr = null;
     while (!userFound) {
       if (pastaUsuarios.length <= count) {
-        return { success: false, message: "Usuário não encontrado" }
+        return { success: false, message: "Usuário não encontrado" };
       }
       let handle_usr = pastaUsuarios.at(count);
       let arq_usr = handle_usr.arquivos.find(
-        (arquivo) => arquivo.nome === handle_usr.nome + '.txt');
-      let name_arr = arq_usr.conteudo.split("\n").at(0).split(' ')
+        (arquivo) => arquivo.nome === handle_usr.nome + ".txt"
+      );
+      let name_arr = arq_usr.conteudo.split("\n").at(0).split(" ");
       name_arr.shift();
-      let nome_usr = (name_arr.join(" "));
-      let id_usr = (arq_usr.conteudo.split("\n").at(1).split(' ').at(1));
+      let nome_usr = name_arr.join(" ");
+      let id_usr = arq_usr.conteudo.split("\n").at(1).split(" ").at(1);
       count++;
       userFound = true ? nome_usr == username : false;
-      usr = new Usuario(nome_usr, id_usr)
-      console.log(usr)
+      usr = new Usuario(nome_usr, id_usr);
+      console.log(usr);
     }
 
     const dir = comandoService.findDirectory(dirname);
     if (dir instanceof Diretorio) {
       dir.mudarProprietario(usr);
-      return { success: true, message: "Proprietário do diretório alterado com sucesso" };
+      return {
+        success: true,
+        message: "Proprietário do diretório alterado com sucesso",
+      };
     } else {
       const arq = comandoService.findArquivo(dirname);
       if (arq instanceof Arquivo) {
         arq.mudarProprietario(usr);
-        return { success: true, message: "Proprietário do arquivo alterado com sucesso" }
-
+        return {
+          success: true,
+          message: "Proprietário do arquivo alterado com sucesso",
+        };
       }
-      return { success: false, message: "Diretorio ou arquivo não encontrado" }
+      return { success: false, message: "Diretorio ou arquivo não encontrado" };
     }
   },
-  
+
   find: (input) => {
     // Divide o input para extrair o tipo de busca (diretório ou arquivo) e o nome
     const [tipo, nome] = input.split(" ").map((item) => item.trim());
@@ -959,6 +996,345 @@ const comandoService = {
     // Busca recursivamente nas subpastas
     for (const subdiretorio of diretorioAtual.subpastas) {
       const resultado = comandoService.findDir4(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
+  },
+  diff: (input) => {
+    // Divide o input para extrair os nomes dos arquivos
+    const [arquivo1, arquivo2] = input.split(" ").map((item) => item.trim());
+
+    if (!arquivo1 || !arquivo2) {
+      return {
+        success: false,
+        message: "Formato inválido. Use: diff arquivo1 arquivo2",
+      };
+    }
+
+    // Encontra os arquivos
+    const arquivo1Obj = comandoService.findArq5(comandoService.root, arquivo1);
+    const arquivo2Obj = comandoService.findArq5(comandoService.root, arquivo2);
+
+    if (!arquivo1Obj) {
+      return {
+        success: false,
+        message: `Arquivo '${arquivo1}' não encontrado.`,
+      };
+    }
+    if (!arquivo2Obj) {
+      return {
+        success: false,
+        message: `Arquivo '${arquivo2}' não encontrado.`,
+      };
+    }
+
+    // Compara o conteúdo dos arquivos
+    const conteudo1 = arquivo1Obj.conteudo.split("\n");
+    const conteudo2 = arquivo2Obj.conteudo.split("\n");
+
+    const diff = comandoService.compararConteudo(conteudo1, conteudo2);
+
+    if (diff.length === 0) {
+      return { success: true, message: "Os arquivos são idênticos." };
+    } else {
+      return {
+        success: true,
+        message: `Diferenças encontradas:\n${diff.join("\n")}`,
+      };
+    }
+  },
+
+  compararConteudo: (conteudo1, conteudo2) => {
+    const diff = [];
+    const maxLines = Math.max(conteudo1.length, conteudo2.length);
+
+    for (let i = 0; i < maxLines; i++) {
+      const linha1 = conteudo1[i] || "";
+      const linha2 = conteudo2[i] || "";
+
+      if (linha1 !== linha2) {
+        diff.push(`Linha ${i + 1}:\n< ${linha1}\n> ${linha2}`);
+      }
+    }
+
+    return diff;
+  },
+
+  findArq5: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o arquivo está no diretório atual
+    const arquivo = diretorioAtual.arquivos.find(
+      (arquivo) => arquivo.nome === nome
+    );
+    if (arquivo) {
+      return {
+        nome: arquivo.nome,
+        caminho: `${caminho}/${arquivo.nome}`,
+        conteudo: arquivo.conteudo,
+      };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findArq5(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
+  },
+  zip: (input) => {
+    // Divide o input para extrair o nome do arquivo .zip e os itens a serem compactados
+    const [arquivoZip, ...itens] = input.split(" ").map((item) => item.trim());
+
+    if (!arquivoZip || itens.length === 0) {
+      return {
+        success: false,
+        message: "Formato inválido. Use: zip arquivo.zip item1 item2 ...",
+      };
+    }
+
+    // Verifica se o arquivo .zip já existe
+    if (comandoService.findArq6(comandoService.root, arquivoZip)) {
+      return { success: false, message: `Arquivo '${arquivoZip}' já existe.` };
+    }
+
+    // Coleta os itens a serem compactados
+    const itensCompactados = [];
+    for (const item of itens) {
+      const arquivo = comandoService.findArq6(comandoService.root, item);
+      const diretorio = comandoService.findDir6(comandoService.root, item);
+
+      if (!arquivo && !diretorio) {
+        return { success: false, message: `Item '${item}' não encontrado.` };
+      }
+
+      if (arquivo) {
+        itensCompactados.push({
+          tipo: "arquivo",
+          nome: arquivo.nome,
+          conteudo: arquivo.conteudo,
+        });
+      } else if (diretorio) {
+        itensCompactados.push({
+          tipo: "diretorio",
+          nome: diretorio.nome,
+          itens: diretorio.arquivos.concat(diretorio.subpastas),
+        });
+      }
+    }
+
+    // Cria o arquivo .zip (simulado)
+    const arquivoZipObj = new Arquivo(arquivoZip + ".zip");
+    arquivoZipObj.conteudo = JSON.stringify(itensCompactados); // Simula a compactação
+    comandoService.root.arquivos.push(arquivoZipObj);
+
+    return {
+      success: true,
+      message: `Itens compactados em ${arquivoZip}.zip`,
+    };
+  },
+
+  findArq6: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o arquivo está no diretório atual
+    const arquivo = diretorioAtual.arquivos.find(
+      (arquivo) => arquivo.nome === nome
+    );
+    if (arquivo) {
+      return {
+        nome: arquivo.nome,
+        caminho: `${caminho}/${arquivo.nome}`,
+        conteudo: arquivo.conteudo,
+      };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findArq6(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
+  },
+
+  findDir6: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o diretório atual é o que estamos procurando
+    if (diretorioAtual.nome === nome) {
+      return {
+        nome: diretorioAtual.nome,
+        caminho,
+        arquivos: diretorioAtual.arquivos,
+        subpastas: diretorioAtual.subpastas,
+      };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findDir6(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
+  },
+  unzip: (input) => {
+    // Extrai o nome do arquivo .zip
+    const arquivoZip = input.trim();
+
+    if (!arquivoZip) {
+      return {
+        success: false,
+        message: "Formato inválido. Use: unzip arquivo.zip",
+      };
+    }
+
+    // Encontra o arquivo .zip
+    const arquivoZipObj = comandoService.findArq7(
+      comandoService.root,
+      arquivoZip
+    );
+    if (!arquivoZipObj) {
+      return {
+        success: false,
+        message: `Arquivo '${arquivoZip}' não encontrado.`,
+      };
+    }
+
+    // "Descompacta" o arquivo .zip (simulado)
+    try {
+      const itensCompactados = JSON.parse(arquivoZipObj.conteudo);
+      const mensagens = [];
+
+      for (const item of itensCompactados) {
+        let nomeFinal = item.nome;
+
+        // Verifica se o item já existe no diretório atual
+        if (
+          comandoService.findArq7(comandoService.root, nomeFinal) ||
+          comandoService.findDir7(comandoService.root, nomeFinal)
+        ) {
+          let contador = 1;
+          while (
+            comandoService.findArq7(
+              comandoService.root,
+              `${nomeFinal} Cópia(${contador})`
+            ) ||
+            comandoService.findDir7(
+              comandoService.root,
+              `${nomeFinal} Cópia(${contador})`
+            )
+          ) {
+            contador++;
+          }
+          nomeFinal = `${nomeFinal} Cópia(${contador})`;
+        }
+
+        if (item.tipo === "arquivo") {
+          const novoArquivo = new Arquivo(nomeFinal);
+          novoArquivo.conteudo = item.conteudo;
+          comandoService.root.arquivos.push(novoArquivo);
+          mensagens.push(`Arquivo '${nomeFinal}' extraído.`);
+        } else if (item.tipo === "diretorio") {
+          const novoDiretorio = new Diretorio(nomeFinal);
+          novoDiretorio.arquivos = item.itens.filter(
+            (i) => i.tipo === "arquivo"
+          );
+          novoDiretorio.subpastas = item.itens.filter(
+            (i) => i.tipo === "diretorio"
+          );
+          comandoService.root.subpastas.push(novoDiretorio);
+          mensagens.push(`Diretório '${nomeFinal}' extraído.`);
+        }
+      }
+
+      return {
+        success: true,
+        message: `Arquivo '${arquivoZip}' descompactado com sucesso:\n${mensagens.join(
+          "\n"
+        )}`,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Erro ao descompactar o arquivo '${arquivoZip}'.`,
+      };
+    }
+  },
+
+  findArq7: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o arquivo está no diretório atual
+    const arquivo = diretorioAtual.arquivos.find(
+      (arquivo) => arquivo.nome === nome
+    );
+    if (arquivo) {
+      return {
+        nome: arquivo.nome,
+        caminho: `${caminho}/${arquivo.nome}`,
+        conteudo: arquivo.conteudo,
+      };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findArq7(subdiretorio, nome, caminho);
+      if (resultado) {
+        return resultado;
+      }
+    }
+
+    // Se não encontrou, retorna null
+    return null;
+  },
+
+  findDir7: (diretorioAtual, nome, caminhoAtual = "") => {
+    // Define o caminho atual
+    const caminho = caminhoAtual
+      ? `${caminhoAtual}/${diretorioAtual.nome}`
+      : diretorioAtual.nome;
+
+    // Verifica se o diretório atual é o que estamos procurando
+    if (diretorioAtual.nome === nome) {
+      return {
+        nome: diretorioAtual.nome,
+        caminho,
+        arquivos: diretorioAtual.arquivos,
+        subpastas: diretorioAtual.subpastas,
+      };
+    }
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of diretorioAtual.subpastas) {
+      const resultado = comandoService.findDir7(subdiretorio, nome, caminho);
       if (resultado) {
         return resultado;
       }
