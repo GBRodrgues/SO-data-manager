@@ -1,12 +1,12 @@
-import styled from 'styled-components';
-import codeGif from '../assets/matrix.gif';
+import styled from "styled-components";
+import codeGif from "../assets/matrix.gif";
 
 export const TerminalWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: url(${codeGif}) center/cover no-repeat;
+  //background: url(${codeGif}) center/cover no-repeat;
   opacity: 0.9; /* Define a opacidade APENAS da imagem de fundo */
 `;
 
@@ -26,7 +26,7 @@ export const TerminalOutput = styled.div`
   flex: 1;
   padding: 10px;
   color: #00ff00;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   font-size: 14px;
   overflow-y: auto;
   white-space: pre-wrap;
@@ -42,7 +42,7 @@ export const TerminalInputContainer = styled.div`
 export const TerminalPrompt = styled.span`
   color: #00ff00;
   margin-right: 5px;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
 `;
 
 export const TerminalInput = styled.input`
@@ -51,6 +51,6 @@ export const TerminalInput = styled.input`
   border: none;
   outline: none;
   color: #00ff00;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   font-size: 14px;
 `;
