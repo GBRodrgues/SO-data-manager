@@ -60,7 +60,7 @@ const comandoController = {
     },
 
     buscarCaminho: (req, res) => {
-        res.json(comandoService.printWorkingDirectory())
+        res.json(comandoService.getCamminho())
     }
 };
 

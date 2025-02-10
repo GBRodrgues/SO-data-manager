@@ -20,7 +20,7 @@ class Arquivo {
   read() {
     return this.conteudo;
   }
-  updateNome(nome) {
+  atualizarNome(nome) {
     this.nome = nome;
   }
 
