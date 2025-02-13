@@ -1,8 +1,4 @@
 import Diretorio from "../models/Diretorio.js";
-import Arquivo from "../models/Arquivo.js";
-import Usuario from "../models/Usuario.js";
-
-
 import dirServices from "./so_services/dirServices.js";
 import fileServices from "./so_services/fileServices.js";
 import navServices from "./so_services/navigationServices.js";
@@ -47,13 +43,13 @@ const comandoService = {
       //Navegação entre diretórios
       case "cd":
         let result = navServices.changeDirectory(args.name, dir);
-        comandoService.root = result.at(0)
-        return result.at(1)
+        comandoService.root = result.at(0);
+        return result.at(1);
       case "pwd":
         return navServices.printWorkingDirectory(dir);
 
       //busca e filtragem
-      case "find"://corrigir
+      case "find": //corrigir
         return searchServices.find(args.name, dir);
       case "grep":
         return searchServices.grep(args.name, dir);
@@ -65,8 +61,11 @@ const comandoService = {
       //Informações de arquivos e diretórios
       case "stat":
         return infoServices.getFileStats(args.name, dir);
-      case "du"://inforservices
-        return { success: false, message: "Comando 'du' ainda não foi implementado" }
+      case "du": //inforservices
+        return {
+          success: false,
+          message: "Comando 'du' ainda não foi implementado",
+        };
 
       //operacoes avancadas
       case "cp":
@@ -86,7 +85,10 @@ const comandoService = {
       case "save":
         return extraServices.save(dir);
       case "history":
-        return { success: false, message: "Comando 'history' ainda deve ser implementado" }
+        return {
+          success: false,
+          message: "Comando 'history' ainda deve ser implementado",
+        };
       case "ls":
         return extraServices.listContents(dir);
 
@@ -95,10 +97,9 @@ const comandoService = {
     }
   },
 
-  getCamminho: () =>{
+  getCamminho: () => {
     return navServices.printWorkingDirectory(comandoService.root);
   },
-
 };
 
 export default comandoService;

@@ -1,19 +1,16 @@
 import Diretorio from "../../models/Diretorio.js";
-import dirServices from "./dirServices.js";
 
 const searchServices = {
-
-  find: (input, dir=Diretorio) => {
+  find: (input, dir = Diretorio) => {
     // Divide o input para extrair o tipo de busca (diretório ou arquivo) e o nome
     const [tipo, nome] = input.split(" ").map((item) => item.trim());
-    console.log(tipo)
-    console.log(nome)
+    console.log(tipo);
+    console.log(nome);
 
     if (!tipo || !nome) {
       return {
         success: false,
-        message:
-          "Formato inválido. Use: find directory nome ou find arquivo nome",
+        message: "Formato inválido. Use: find dir nome ou find arq nome",
       };
     }
 
@@ -43,13 +40,12 @@ const searchServices = {
     } else {
       return {
         success: false,
-        message:
-          "Tipo de busca inválido. Use: find directory nome ou find arquivo nome",
+        message: "Tipo de busca inválido. Use: find dir nome ou find arq nome",
       };
     }
   },
 
-  grep: (input, dir=Diretorio) => {
+  grep: (input, dir = Diretorio) => {
     // Divide o input para extrair o termo e o nome do arquivo
     const [termo, arquivoNome] = input.split(" ").map((item) => item.trim());
 
@@ -114,7 +110,6 @@ const searchServices = {
     return null;
   },
 
-
   findArq: (diretorioAtual, nome, caminhoAtual = "") => {
     // Define o caminho atual
     const caminho = caminhoAtual
@@ -140,7 +135,5 @@ const searchServices = {
     // Se não encontrou, retorna null
     return null;
   },
-
-
-}
+};
 export default searchServices;

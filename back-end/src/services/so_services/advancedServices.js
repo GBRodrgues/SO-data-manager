@@ -1,6 +1,5 @@
 import Diretorio from "../../models/Diretorio.js";
 import Arquivo from "../../models/Arquivo.js";
-import dirServices from "./dirServices.js";
 import searchServices from "./searchServices.js";
 
 const advServices = {
@@ -17,28 +16,29 @@ const advServices = {
 
     // Encontra o arquivo ou diretório de origem
     let arquivoOrigem = searchServices.findArq(dir, origem);
-    let diretorioOrigem = searchServices.findDir(dir,origem);
+    let diretorioOrigem = searchServices.findDir(dir, origem);
 
     if (!arquivoOrigem && !diretorioOrigem) {
       return { success: false, message: `Origem '${origem}' não encontrada.` };
     }
 
     // Encontra o diretório de destino
-    let diretorioDestino = searchServices.findDir(
-      dir,
-      destino
-    );
+    let diretorioDestino = searchServices.findDir(dir, destino);
     if (!diretorioDestino) {
       return {
         success: false,
         message: `Destino '${destino}' não encontrado.`,
       };
     }
-    diretorioDestino = diretorioDestino.at(0)
+    diretorioDestino = diretorioDestino.at(0);
     // Copia o arquivo ou diretório
     if (arquivoOrigem) {
-      arquivoOrigem = arquivoOrigem.at(0)
-      const novoArquivo = new Arquivo(arquivoOrigem.nome, arquivoOrigem.conteudo, arquivoOrigem.proprietario);
+      arquivoOrigem = arquivoOrigem.at(0);
+      const novoArquivo = new Arquivo(
+        arquivoOrigem.nome,
+        arquivoOrigem.conteudo,
+        arquivoOrigem.proprietario
+      );
       diretorioDestino.arquivos.push(novoArquivo);
       return {
         success: true,
@@ -46,7 +46,11 @@ const advServices = {
       };
     } else if (diretorioOrigem) {
       diretorioOrigem = diretorioOrigem.at(0);
-      const novoDiretorio = new Diretorio(diretorioOrigem.nome, diretorioOrigem.pai, diretorioOrigem.proprietario);
+      const novoDiretorio = new Diretorio(
+        diretorioOrigem.nome,
+        diretorioOrigem.pai,
+        diretorioOrigem.proprietario
+      );
       novoDiretorio.arquivos = diretorioOrigem.arquivos;
       novoDiretorio.subpastas = diretorioOrigem.subpastas;
       novoDiretorio.permissoes = diretorioOrigem.permissoes;
@@ -58,7 +62,7 @@ const advServices = {
     }
   },
 
-  mv: (input, dir=Diretorio) => {
+  mv: (input, dir = Diretorio) => {
     // Divide o input para extrair a origem e o destino
     const [origem, destino] = input.split(" ").map((item) => item.trim());
 
@@ -71,20 +75,14 @@ const advServices = {
 
     // Encontra o arquivo ou diretório de origem
     let arquivoOrigem = searchServices.findArq(dir, origem);
-    let diretorioOrigem = searchServices.findDir(
-      dir,
-      origem
-    );
+    let diretorioOrigem = searchServices.findDir(dir, origem);
 
     if (!arquivoOrigem && !diretorioOrigem) {
       return { success: false, message: `Origem '${origem}' não encontrada.` };
     }
 
     // Encontra o diretório de destino
-    let diretorioDestino = searchServices.findDir(
-      dir,
-      destino
-    );
+    let diretorioDestino = searchServices.findDir(dir, destino);
     if (!diretorioDestino) {
       return {
         success: false,
@@ -97,8 +95,8 @@ const advServices = {
     if (arquivoOrigem) {
       arquivoOrigem = arquivoOrigem.at(0);
       // Remove o arquivo da origem
-      console.log(origem)
-      console.log(origem.split("/").slice(0, -1).join("/"))
+      console.log(origem);
+      console.log(origem.split("/").slice(0, -1).join("/"));
       dir.arquivos = dir.arquivos.filter(
         (arquivo) => arquivo.nome !== arquivoOrigem.nome
       );
@@ -125,7 +123,7 @@ const advServices = {
     }
   },
 
-  diff: (input, dir=Diretorio) => {
+  diff: (input, dir = Diretorio) => {
     // Divide o input para extrair os nomes dos arquivos
     const [arquivo1, arquivo2] = input.split(" ").map((item) => item.trim());
 
@@ -185,8 +183,7 @@ const advServices = {
     return diff;
   },
 
-
-  zip: (input, dir=Diretorio) => {
+  zip: (input, dir = Diretorio) => {
     // Divide o input para extrair o nome do arquivo .zip e os itens a serem compactados
     const [arquivoZip, ...itens] = input.split(" ").map((item) => item.trim());
 
@@ -240,8 +237,7 @@ const advServices = {
     };
   },
 
-
-  unzip: (input, dir=Diretorio) => {
+  unzip: (input, dir = Diretorio) => {
     // Extrai o nome do arquivo .zip
     const arquivoZip = input.trim();
 
@@ -253,10 +249,7 @@ const advServices = {
     }
 
     // Encontra o arquivo .zip
-    let arquivoZipObj = searchServices.findArq(
-      dir,
-      arquivoZip
-    );
+    let arquivoZipObj = searchServices.findArq(dir, arquivoZip);
     if (!arquivoZipObj) {
       return {
         success: false,
@@ -279,14 +272,8 @@ const advServices = {
         ) {
           let contador = 1;
           while (
-            searchServices.findArq(
-              dir,
-              `${nomeFinal} Cópia(${contador})`
-            ) ||
-            searchServices.findDir(
-              dir,
-              `${nomeFinal} Cópia(${contador})`
-            )
+            searchServices.findArq(dir, `${nomeFinal} Cópia(${contador})`) ||
+            searchServices.findDir(dir, `${nomeFinal} Cópia(${contador})`)
           ) {
             contador++;
           }
@@ -323,5 +310,5 @@ const advServices = {
       };
     }
   },
-}
+};
 export default advServices;

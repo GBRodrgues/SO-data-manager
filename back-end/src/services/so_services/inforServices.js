@@ -1,7 +1,7 @@
 import Diretorio from "../../models/Diretorio.js";
 
 const infoServices = {
-  getFileStats: (name, dir=Diretorio) => {
+  getFileStats: (name, dir = Diretorio) => {
     if (!name) {
       return {
         success: false,
@@ -23,5 +23,5 @@ const infoServices = {
       message: `Arquivo ou diretorio ${name} não encontrado`,
     };
   },
-}
+};
 export default infoServices;

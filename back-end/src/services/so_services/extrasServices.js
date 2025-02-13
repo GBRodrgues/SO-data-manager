@@ -6,8 +6,7 @@ import path from "path";
 import searchServices from "./searchServices.js";
 
 const extraServices = {
-
-  listContents: (dir=Diretorio) => {
+  listContents: (dir = Diretorio) => {
     const contents = dir.listContents();
     if (contents.arquivos.length == 0 && contents.subpastas.length == 0) {
       return { success: false, message: "Diretório vazio." };
@@ -17,10 +16,8 @@ const extraServices = {
     return { success: true, message: conteudos.join("\n") };
   },
 
-
-
   //adicionando um novo usuário na pasta usr
-  adduser: (username, dir=Diretorio) => {
+  adduser: (username, dir = Diretorio) => {
     const pastaUsuarios = dir
       .get_root()
       .subpastas.find((pasta) => pasta.nome === "usuarios");
@@ -37,7 +34,7 @@ const extraServices = {
     return { success: true, message: "usuario criado com sucesso" };
   },
 
-  save: (dir=Diretorio) => {
+  save: (dir = Diretorio) => {
     let caminhoBase = "./sistema_arquivos";
     if (!fs.existsSync(caminhoBase)) {
       fs.mkdirSync(caminhoBase, { recursive: true });
@@ -70,7 +67,7 @@ const extraServices = {
     };
   },
 
-  chown: (args, dir=Diretorio) => {
+  chown: (args, dir = Diretorio) => {
     let args_arr = args.split(" ");
     let dirname = args_arr.pop();
     let username = args_arr.join(" ");
@@ -118,5 +115,5 @@ const extraServices = {
       return { success: false, message: "Diretorio ou arquivo não encontrado" };
     }
   },
-}
+};
 export default extraServices;
