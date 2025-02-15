@@ -1,8 +1,8 @@
 import Diretorio from "../../models/Diretorio.js";
 import searchServices from "./searchServices.js";
+
 const dirServices = {
-  createDirectory: (name, dir = Diretorio) => {
-    // Recebe a pasta onde o novo diretório será criado e o nome desse novo diretório
+  createDirectory: (name, dir = Diretorio, usuarioAtivo = null) => {
     if (!name) {
       return { success: false, message: "Nome obrigatório." };
     }
@@ -12,7 +12,12 @@ const dirServices = {
       return { success: false, message: `O diretório '${name}' já existe` };
     }
 
-    const newDir = new Diretorio(name, dir);
+    // Cria o novo diretório com o usuário ativo como proprietário
+    const newDir = new Diretorio(name, dir, usuarioAtivo);
+    if (usuarioAtivo) {
+      newDir.mudarProprietario(usuarioAtivo); // Define o proprietário
+    }
+
     dir.addSubPasta(newDir);
     return {
       success: true,
@@ -36,33 +41,30 @@ const dirServices = {
 
   showTree: (dir = Diretorio) => {
     var root = dir.get_root();
-    //incializa a resposta com o nome da pasta raiz
     let result = root.nome;
 
     const printTree = (dir, prefix = "", string_final) => {
-      //funcao para criar arvore
       const subpastas = dir.subpastas;
       const arquivos = dir.arquivos;
       const total = subpastas.length + arquivos.length;
 
       subpastas.forEach((pasta, index) => {
-        //para cada pasta do diretorio
-        const isLast = index === total - 1; //se o indice for o último da pasta
+        const isLast = index === total - 1;
         string_final = string_final.concat(
           prefix + (isLast ? "└── " : "├── ") + pasta.nome + "\n"
-        ); //exibe o nome da subpasta
+        );
         string_final = printTree(
           pasta,
           prefix + (isLast ? "    " : "│   "),
           string_final
-        ); //recursivamente, exibe o conteudo da subpasta
+        );
       });
 
       arquivos.forEach((arquivo, index) => {
-        const isLast = index === arquivos.length - 1; //verifica se é o último arquivo da pasta
+        const isLast = index === arquivos.length - 1;
         string_final = string_final.concat(
           prefix + (isLast ? "└── " : "├── ") + arquivo.nome + "\n"
-        ); //exibe o arquivo
+        );
       });
       return string_final;
     };
@@ -98,5 +100,48 @@ const dirServices = {
       message: `Arquivo ou diretório "${nome_antigo}" não encontrado.`,
     };
   },
+
+  calculateDirectorySize: (name, dir = Diretorio) => {
+    console.log(`Procurando diretório: ${name}`);
+    const targetDir = dirServices.findDirectory(name, dir);
+
+    if (!targetDir) {
+      console.log(`Diretório '${name}' não encontrado.`);
+      return { success: false, message: `Diretório '${name}' não encontrado.` };
+    }
+
+    console.log(`Diretório encontrado: ${targetDir.nome}`);
+    const totalSize = dirServices.calculateSize(targetDir);
+
+    return {
+      success: true,
+      message: `Tamanho do diretório '${name}': ${totalSize} bytes`,
+    };
+  },
+
+  calculateSize: (dir) => {
+    let totalSize = 0;
+
+    // Somar o tamanho dos arquivos no diretório atual
+    dir.arquivos.forEach((arquivo) => {
+      totalSize += arquivo.conteudo.length || 0; // Usar o comprimento do conteúdo como tamanho
+    });
+
+    // Somar o tamanho dos subdiretórios recursivamente
+    dir.subpastas.forEach((subpasta) => {
+      totalSize += dirServices.calculateSize(subpasta);
+    });
+
+    return totalSize;
+  },
+
+  findDirectory: (name, dir = Diretorio) => {
+    if (!dir || !dir.subpastas) {
+      return null;
+    }
+    const dirFound = dir.subpastas.find((pasta) => pasta.nome === name);
+    return dirFound || null;
+  },
 };
+
 export default dirServices;

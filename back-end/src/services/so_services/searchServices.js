@@ -46,8 +46,25 @@ const searchServices = {
   },
 
   grep: (input, dir = Diretorio) => {
-    // Divide o input para extrair o termo e o nome do arquivo
-    const [termo, arquivoNome] = input.split(" ").map((item) => item.trim());
+    // Verifica se o input foi fornecido
+    if (!input || typeof input !== "string") {
+      return {
+        success: false,
+        message: "Formato inválido. Use: grep termo arquivo",
+      };
+    }
+
+    // Extrai o termo e o nome do arquivo
+    const primeiroEspaco = input.indexOf(" ");
+    if (primeiroEspaco === -1) {
+      return {
+        success: false,
+        message: "Formato inválido. Use: grep termo arquivo",
+      };
+    }
+
+    const termo = input.slice(0, primeiroEspaco).trim();
+    const arquivoNome = input.slice(primeiroEspaco + 1).trim();
 
     if (!termo || !arquivoNome) {
       return {
@@ -66,12 +83,12 @@ const searchServices = {
     }
 
     // Lê o conteúdo do arquivo
-    const conteudo = arquivo.conteudo;
+    const conteudo = String(arquivo.conteudo); // Garante que o conteúdo seja uma string
 
     // Divide o conteúdo em linhas
-    const linhas = String(conteudo).split("\n");
+    const linhas = conteudo.split("\n");
 
-    // Filtra as linhas que contêm o termo
+    // Filtra as linhas que contêm o termo (case-sensitive)
     const linhasEncontradas = linhas.filter((linha) => linha.includes(termo));
 
     if (linhasEncontradas.length === 0) {
@@ -86,7 +103,6 @@ const searchServices = {
       };
     }
   },
-
   findDir: (diretorioAtual, nome, caminhoAtual = "") => {
     // Define o caminho atual
     const caminho = caminhoAtual

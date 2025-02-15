@@ -10,11 +10,20 @@ import extraServices from "./so_services/extrasServices.js";
 const comandoService = {
   // Inicializando um diretório raiz para simular um sistema de arquivos
   root: Diretorio.setupRoot(),
-  currentPath: "~",
+  currentPath: "~", // Caminho atual
+  usuarioAtivo: null, // Usuário ativo
+
+  // Método para atualizar o prompt
+  getPrompt: () => {
+    const usuario = comandoService.usuarioAtivo;
+    const caminho = comandoService.currentPath;
+    return usuario ? `${usuario.nome}# ${caminho}$` : `~$`;
+  },
+
   execute: (command, args) => {
     let dir = comandoService.root;
     switch (command) {
-      //comandos de manipulação de diretório
+      // Comandos de manipulação de diretório
       case "mkdir":
         return dirServices.createDirectory(args.name, dir);
       case "rmdir":
@@ -24,7 +33,7 @@ const comandoService = {
       case "rename":
         return dirServices.rename(args.name, dir);
 
-      //Comandos para manipulação de arquivos
+      // Comandos para manipulação de arquivos
       case "cat":
         return fileServices.showFileContent(args.name, dir);
       case "rm":
@@ -32,7 +41,7 @@ const comandoService = {
       case "touch":
         return fileServices.createFile(args.name, dir);
       case "wc":
-        return fileServices.wc(args.name, dir); // Novo comando wc
+        return fileServices.wc(args.name, dir);
       case "head":
         return fileServices.head(args.name, dir);
       case "tail":
@@ -40,38 +49,41 @@ const comandoService = {
       case "echo":
         return fileServices.echo(args.name, dir);
 
-      //Navegação entre diretórios
+      // Navegação entre diretórios
       case "cd":
         let result = navServices.changeDirectory(args.name, dir);
         comandoService.root = result.at(0);
+        comandoService.currentPath =
+          navServices.printWorkingDirectory(dir).message;
         return result.at(1);
+
       case "pwd":
         return navServices.printWorkingDirectory(dir);
 
-      //busca e filtragem
-      case "find": //corrigir
+      // Busca e filtragem
+      case "find":
         return searchServices.find(args.name, dir);
       case "grep":
         return searchServices.grep(args.name, dir);
 
-      //permissão e propriedades
+      // Permissão e propriedades
       case "chown":
-        return extraServices.chown(args.name), dir;
+        return extraServices.chown(args.name, dir);
 
-      //Informações de arquivos e diretórios
+      case "chmod":
+        return extraServices.chmod(args.name, dir);
+
+      // Informações de arquivos e diretórios
       case "stat":
         return infoServices.getFileStats(args.name, dir);
-      case "du": //inforservices
-        return {
-          success: false,
-          message: "Comando 'du' ainda não foi implementado",
-        };
+      case "du":
+        return dirServices.calculateDirectorySize(args.name, dir);
 
-      //operacoes avancadas
+      // Operações avançadas
       case "cp":
         return advServices.cp(args.name, dir);
       case "mv":
-        return advServices.mv(args.name, dir); // Novo comando mv
+        return advServices.mv(args.name, dir);
       case "diff":
         return advServices.diff(args.name, dir);
       case "zip":
@@ -79,18 +91,39 @@ const comandoService = {
       case "unzip":
         return advServices.unzip(args.name, dir);
 
-      //Extras
+      // Extras
       case "adduser":
-        return extraServices.adduser(args.name, dir);
+        const resultadoAddUser = extraServices.adduser(args.name, dir);
+        if (resultadoAddUser.success) {
+          comandoService.usuarioAtivo = extraServices.obterUsuarioAtivo();
+        }
+        return resultadoAddUser;
+
       case "save":
         return extraServices.save(dir);
+
       case "history":
         return {
           success: false,
           message: "Comando 'history' ainda deve ser implementado",
         };
+
       case "ls":
-        return extraServices.listContents(dir);
+        if (args.name === "-l") {
+          return extraServices.listContentsDetailed(dir);
+        } else {
+          return extraServices.listContents(dir);
+        }
+
+      case "su":
+        const resultadoSu = extraServices.su(args.name, dir);
+        if (resultadoSu.success) {
+          comandoService.usuarioAtivo = extraServices.obterUsuarioAtivo();
+        }
+        return resultadoSu;
+
+      case "whoami":
+        return extraServices.whoami();
 
       default:
         return { success: false, message: "Comando inválido!" };
