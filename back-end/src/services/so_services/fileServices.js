@@ -1,6 +1,7 @@
 import Diretorio from "../../models/Diretorio.js";
 import Arquivo from "../../models/Arquivo.js";
 import searchServices from "./searchServices.js";
+
 const fileServices = {
   findArquivo: (name, dir = Diretorio) => {
     return dir.arquivos.find((arquivo) => arquivo.nome === name);
@@ -81,8 +82,8 @@ const fileServices = {
       message: `Arquivo '${arquivoNome}':\nLinhas: ${numLinhas}\nPalavras: ${numPalavras}\nCaracteres: ${numCaracteres}`,
     };
   },
+
   head: (input, dir = Diretorio) => {
-    // Divide o input no espaço para separar o nome do arquivo e o número de linhas
     const [arquivoNome, n] = input.split(" ").map((item) => item.trim());
 
     if (!arquivoNome || !n) {
@@ -108,10 +109,7 @@ const fileServices = {
       };
     }
 
-    // Divide o conteúdo do arquivo em linhas
     const linhas = arquivo.conteudo.split("\n");
-
-    // Pega as primeiras n linhas
     const primeirasLinhas = linhas.slice(0, numLinhas).join("\n");
 
     return {
@@ -121,7 +119,6 @@ const fileServices = {
   },
 
   tail: (input, dir = Diretorio) => {
-    // Divide o input no espaço para separar o nome do arquivo e o número de linhas
     const [arquivoNome, n] = input.split(" ").map((item) => item.trim());
 
     if (!arquivoNome || !n) {
@@ -147,10 +144,7 @@ const fileServices = {
       };
     }
 
-    // Divide o conteúdo do arquivo em linhas
     const linhas = arquivo.conteudo.split("\n");
-
-    // Pega as últimas n linhas
     const ultimasLinhas = linhas.slice(-numLinhas).join("\n");
 
     return {
@@ -160,26 +154,23 @@ const fileServices = {
   },
 
   writeFile: (input, dir = Diretorio) => {
-    // Separar o texto e o nome do arquivo
     const [texto, arquivoNome] = input.split(">").map((item) => item.trim());
 
     if (!arquivoNome) {
       return { success: false, message: "Nome do arquivo é obrigatório." };
     }
 
-    // Verificar se o arquivo já existe
     const arquivo = fileServices.findArquivo(arquivoNome, dir);
 
     if (arquivo) {
-      // Sobrescrever o conteúdo do arquivo
       arquivo.write(texto);
       return {
         success: true,
         message: `Conteúdo do arquivo '${arquivoNome}' sobrescrito.`,
       };
     } else {
-      // Criar um novo arquivo com o conteúdo
-      const novoArquivo = new Arquivo(arquivoNome, texto);
+      const novoArquivo = new Arquivo(arquivoNome);
+      novoArquivo.write(texto);
       dir.addArquivo(novoArquivo);
       return {
         success: true,
@@ -187,6 +178,7 @@ const fileServices = {
       };
     }
   },
+
   appendToFile: (input, dir) => {
     const splitIndex = input.indexOf(">>");
     if (splitIndex === -1) {
@@ -206,7 +198,7 @@ const fileServices = {
     const arquivo = fileServices.findArquivo(arquivoNome, dir);
 
     if (arquivo) {
-      arquivo.append(texto); // Adiciona o texto ao final do arquivo
+      arquivo.append(texto);
       return {
         success: true,
         message: `Texto adicionado ao arquivo '${arquivoNome}'.`,
@@ -221,9 +213,9 @@ const fileServices = {
 
   echo: (input, dir = Diretorio) => {
     if (input.includes(">>")) {
-      return fileServices.appendToFile(input, dir); // Append (adicionar ao final)
+      return fileServices.appendToFile(input, dir);
     } else if (input.includes(">")) {
-      return fileServices.writeFile(input, dir); // Sobrescrever
+      return fileServices.writeFile(input, dir);
     } else {
       return {
         success: false,
@@ -233,4 +225,5 @@ const fileServices = {
     }
   },
 };
+
 export default fileServices;

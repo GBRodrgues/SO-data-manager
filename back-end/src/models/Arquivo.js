@@ -1,12 +1,13 @@
+import Permissao from "./Permissao.js";
+
 class Arquivo {
   constructor(nome, conteudo = "", proprietario) {
     this.nome = nome;
     this.conteudo = conteudo;
     this.data_modificacao = Date.now();
     this.owner = proprietario;
-    // this.usuariosPermitidos = [];
-    // this.usuariosPermitidos.push(usuariosPermitidos);//lista de usuários permitidos
-    //Permissão podemos inserir como atributo dessa classe, criando uma nova classe 'usuario' e inserindo cada usuário nessa lista de usuários permitidos
+    this.permissoes = new Permissao(true, true, false); // Permissões padrão: leitura e escrita
+    this.proprietario = proprietario;
   }
 
   write(conteudo) {
@@ -24,16 +25,27 @@ class Arquivo {
     this.nome = nome;
   }
 
-  mudarProprietario(prop){
-    this.owner = prop;
+  mudarProprietario(usuario) {
+    this.proprietario = usuario;
   }
 
   getStats() {
-    return `Nome: ${this.nome}\nProprietário: ${this.owner.nome}`
+    return (
+      `Nome: ${this.nome}\nProprietário: ${this.owner.nome}`,
+      `tamanho: ${this.conteudo.length}`
+    );
   }
 
   getTamanho() {
-    return sizeof(this)
+    return sizeof(this);
+  }
+
+  atualizarPermissoes(permissoes) {
+    this.permissoes.definirPermissoes(permissoes);
+  }
+
+  getPermissoes() {
+    return this.permissoes.toString();
   }
 }
 

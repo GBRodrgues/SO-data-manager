@@ -35,25 +35,25 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 
 - [x] find diretorio -name nome: Procurar arquivos ou diretórios pelo nome em uma
       hierarquia.
-- [x] grep termo arquivo: Procurar por uma palavra ou frase dentro de um arquivo.
+- [] grep termo arquivo: Procurar por uma palavra ou frase dentro de um arquivo.
 
 #### Permissões e Propriedades (Simuladas):
 
-- [ ] chmod permissao nome: Alterar permissões de um arquivo ou diretório (simular
+- [x] chmod permissao nome: Alterar permissões de um arquivo ou diretório (simular
       leitura, escrita e execução).
-- [x] chown proprietario nome: Alterar o proprietário de um arquivo ou diretório.
-- [ ] ls -l: Listar conteúdo do diretório com detalhes (nome, tipo, tamanho, permissões, etc.).
+- [] chown proprietario nome: Alterar o proprietário de um arquivo ou diretório.
+- [x] ls -l: Listar conteúdo do diretório com detalhes (nome, tipo, tamanho, permissões, etc.).
 
 #### Informações sobre Arquivos e Diretórios:
 
-- [x] stat nome: Exibir informações detalhadas de um arquivo ou diretório (tamanho, data
-      de criação, última modificação, etc.).
-- [ ] du diretorio: Exibir o tamanho do diretório em bytes
+- [] stat nome: Exibir informações detalhadas de um arquivo ou diretório (tamanho, data
+  de criação, última modificação, etc.).
+- [x] du diretorio: Exibir o tamanho do diretório em bytes
 
 #### Operações Avançadas:
 
 - [x] cp origem destino: Copiar arquivos ou diretórios.
-- [ ] mv origem destino: Mover arquivos ou diretórios para outra localização.
+- [x] mv origem destino: Mover arquivos ou diretórios para outra localização.
 - [x] diff arquivo1 arquivo2: Comparar dois arquivos e exibir as diferenças.
 - [x] zip arquivo.zip itens: Compactar arquivos ou diretórios em um arquivo `.zip`
       (simulado).
@@ -62,6 +62,7 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 #### Extras:
 
 - [x] history: Exibir os últimos comandos digitados.
+- [x] su: Altera o usuário ativo.
 
 ## Front End
 
