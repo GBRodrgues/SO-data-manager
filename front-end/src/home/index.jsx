@@ -12,7 +12,7 @@ import {
 
 
 const Terminal = () => {
-  const [output, setOutput] = useState('Bem-vindo SO-Corro Terminal!\n');
+  const [output, setOutput] = useState('Bem-vindo SO-DATA-MANAGER Terminal!\n');
   const [command, setCommand] = useState('');
   const [path, setPath] = useState('~');
   
@@ -34,7 +34,7 @@ const Terminal = () => {
     if (trimmedCommand) {
 
       if(trimmedCommand == 'clear'){
-        setOutput('Bem-vindo SO-Corro Terminal!\n');
+        setOutput('Bem-vindo SO-DATA-MANAGER Terminal!\n');
         setCommand('');
         return null;
       }
@@ -47,7 +47,7 @@ const Terminal = () => {
 
       console.log('Estrutura da requisição:', { command: commandName, args });
 
-      setOutput((prev) => `${prev}\nsudo:${path}$ ${trimmedCommand}`);
+      setOutput((prev) => `${prev}\n${path}$: ${trimmedCommand}`);
       
       try {
         const response = await axios.post('http://localhost:5174/api/comando-bash', {

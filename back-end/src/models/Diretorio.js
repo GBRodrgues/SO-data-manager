@@ -112,12 +112,7 @@ class Diretorio {
   }
 
   getStats() {
-    let usuario = this.owner;
-    console.log(usuario);
-    if (usuario instanceof Usuario) {
-      return `Nome: ${this.nome},\nProprietário : ${this.owner.nome}`;
-    }
-    return null;
+    return `Nome: ${this.nome},\nProprietário: ${this.proprietario?.nome}`;
   }
   atualizarPermissoes(permissoes) {
     this.permissoes.definirPermissoes(permissoes);

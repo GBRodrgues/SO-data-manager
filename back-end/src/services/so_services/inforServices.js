@@ -9,18 +9,22 @@ const infoServices = {
       };
     }
 
-    const file = dir.arquivos.find((f) => f.nome === name);
+    // Verifica se o arquivo existe
+    const file = dir.arquivos?.find((f) => f.nome === name);
     if (file) {
-      return { success: true, message: file.getStats() };
+      return { success: true, message: file.getStats() }; // Chama getStats corretamente
     }
 
-    const dirFound = dir.subpastas.find((f) => f.nome === name);
+    // Verifica se o diretório existe
+    const dirFound = dir.subpastas?.find((f) => f.nome === name);
     if (dirFound) {
-      return { success: true, message: dirFound.getStats() };
+      return { success: true, message: dirFound.getStats() }; // Chama getStats corretamente
     }
+
+    // Caso não encontre o arquivo ou diretório
     return {
-      success: true,
-      message: `Arquivo ou diretorio ${name} não encontrado`,
+      success: false,
+      message: `Arquivo ou diretório ${name} não encontrado.`,
     };
   },
 };

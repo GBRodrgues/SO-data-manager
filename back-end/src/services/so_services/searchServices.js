@@ -82,8 +82,8 @@ const searchServices = {
       };
     }
 
-    // Lê o conteúdo do arquivo
-    const conteudo = String(arquivo.conteudo); // Garante que o conteúdo seja uma string
+    // Lê o conteúdo do arquivo corretamente
+    const conteudo = arquivo[0].conteudo; // Acessando o arquivo diretamente
 
     // Divide o conteúdo em linhas
     const linhas = conteudo.split("\n");
@@ -103,6 +103,7 @@ const searchServices = {
       };
     }
   },
+
   findDir: (diretorioAtual, nome, caminhoAtual = "") => {
     // Define o caminho atual
     const caminho = caminhoAtual
