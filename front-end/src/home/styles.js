@@ -1,15 +1,16 @@
 import styled from "styled-components";
 import codeGif from "../assets/matrix.gif";
+import linux from "../assets/linux.avif";
 
 export const TerminalWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: url(${codeGif}) center/cover no-repeat;
+  background: url(${linux}) center/cover no-repeat;
   opacity: 0.9; /* Define a opacidade APENAS da imagem de fundo */
 `;
-
+// background: url(${codeGif}) center/cover no-repeat;
 export const TerminalContainer = styled.div`
   width: 90%;
   max-width: 800px;

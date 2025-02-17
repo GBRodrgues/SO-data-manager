@@ -35,7 +35,7 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 
 - [x] find diretorio -name nome: Procurar arquivos ou diretórios pelo nome em uma
       hierarquia.
-- [] grep termo arquivo: Procurar por uma palavra ou frase dentro de um arquivo.
+- [x] grep termo arquivo: Procurar por uma palavra ou frase dentro de um arquivo.
 
 #### Permissões e Propriedades (Simuladas):
 
@@ -46,8 +46,8 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 
 #### Informações sobre Arquivos e Diretórios:
 
-- [] stat nome: Exibir informações detalhadas de um arquivo ou diretório (tamanho, data
-  de criação, última modificação, etc.).
+- [x] stat nome: Exibir informações detalhadas de um arquivo ou diretório (tamanho, data
+      de criação, última modificação, etc.).
 - [x] du diretorio: Exibir o tamanho do diretório em bytes
 
 #### Operações Avançadas:

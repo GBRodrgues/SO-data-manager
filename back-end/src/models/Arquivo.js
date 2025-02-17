@@ -30,10 +30,7 @@ class Arquivo {
   }
 
   getStats() {
-    return (
-      `Nome: ${this.nome}\nProprietário: ${this.owner.nome}`,
-      `tamanho: ${this.conteudo.length}`
-    );
+    return `Nome: ${this.nome}\nProprietário: ${this.proprietario?.nome}\nTamanho: ${this.conteudo.length} bytes`;
   }
 
   getTamanho() {

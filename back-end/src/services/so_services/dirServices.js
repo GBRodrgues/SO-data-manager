@@ -2,7 +2,7 @@ import Diretorio from "../../models/Diretorio.js";
 import searchServices from "./searchServices.js";
 
 const dirServices = {
-  createDirectory: (name, dir = Diretorio, usuarioAtivo = null) => {
+  createDirectory: (name, dir = Diretorio) => {
     if (!name) {
       return { success: false, message: "Nome obrigatório." };
     }
@@ -12,12 +12,7 @@ const dirServices = {
       return { success: false, message: `O diretório '${name}' já existe` };
     }
 
-    // Cria o novo diretório com o usuário ativo como proprietário
-    const newDir = new Diretorio(name, dir, usuarioAtivo);
-    if (usuarioAtivo) {
-      newDir.mudarProprietario(usuarioAtivo); // Define o proprietário
-    }
-
+    const newDir = new Diretorio(name, dir);
     dir.addSubPasta(newDir);
     return {
       success: true,
