@@ -8,7 +8,7 @@ const dirServices = {
       return { success: false, message: "Nome obrigatório." };
     }
 
-    const dirExists = searchServices.findDir(dir, name);
+    const dirExists = dir.subpastas.find((pasta) => pasta.nome === name);
     if (dirExists) {
       return { success: false, message: `O diretório '${name}' já existe` };
     }
