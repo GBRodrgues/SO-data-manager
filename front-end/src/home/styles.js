@@ -1,23 +1,55 @@
 import styled from "styled-components";
-import codeGif from "../assets/matrix.gif";
-import linux from "../assets/linux.avif";
+import hardware from "../assets/linux.jpg";
+import matrix from "../assets/matrix.gif"
 
-export const TerminalWrapper = styled.div`
+// export const TerminalWrapper = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   flex-direction: column;
+//   height: 100vh;
+//   background: url(${matrix}) center/cover no-repeat;
+//   opacity: 0.9; /* Define a opacidade APENAS da imagem de fundo */
+// `;
+
+export const StyledTerminalWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   height: 100vh;
-  background: url(${linux}) center/cover no-repeat;
-  opacity: 0.9; /* Define a opacidade APENAS da imagem de fundo */
+  background: url(${(props) => (props.isMatrixMode ? matrix : hardware)}) center/cover no-repeat;
+  opacity: 0.9;
 `;
-// background: url(${codeGif}) center/cover no-repeat;
+
+export const ButtonContainer = styled.div`
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+`;
+
+export const StyledButton = styled.button`
+  background-color: black;
+  color: green;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: 2px solid green;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: green;
+    color: black;
+  }
+`;
+
 export const TerminalContainer = styled.div`
   width: 90%;
   max-width: 800px;
   height: 80%;
   background-color: #2b2b2b;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   display: flex;
   flex-direction: column;
