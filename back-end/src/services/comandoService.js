@@ -125,6 +125,9 @@ const comandoService = {
       case "whoami":
         return extraServices.whoami();
 
+      case "pipe":
+        return extraServices.executePipe(args.name, dir);
+
       default:
         return { success: false, message: "Comando inválido!" };
     }
