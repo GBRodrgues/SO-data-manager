@@ -218,7 +218,7 @@ const extraServices = {
 
     // Alterar o proprietário do arquivo ou diretório
     if (arquivo) {
-      arquivo.mudarProprietario(novoProprietario);
+      arquivo.at(0).mudarProprietario(novoProprietario);
       return {
         success: true,
         message: `Proprietário do arquivo '${targetName}' alterado para '${username}'.`,
@@ -226,7 +226,7 @@ const extraServices = {
     }
 
     if (diretorio) {
-      diretorio.mudarProprietario(novoProprietario);
+      diretorio.at(0).mudarProprietario(novoProprietario);
       return {
         success: true,
         message: `Proprietário do diretório '${targetName}' alterado para '${username}'.`,

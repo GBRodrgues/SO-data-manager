@@ -43,6 +43,12 @@ class Arquivo {
   getPermissoes() {
     return this.permissoes.toString();
   }
+
+  static create_from_arquivo(conteudo=String){
+    valores = conteudo.split("\n")
+    console.log(valores )
+
+  }
 }
 
 export default Arquivo;

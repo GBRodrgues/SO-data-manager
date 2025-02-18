@@ -1,4 +1,5 @@
 import Diretorio from "../../models/Diretorio.js";
+import Usuario from "../../models/Usuario.js";
 
 const searchServices = {
   find: (input, dir = Diretorio) => {
@@ -156,13 +157,14 @@ const searchServices = {
     const pasta_usuarios = diretorioAtual
       .get_root()
       .subpastas.find((pasta) => pasta.nome === "usuarios");
-    console.log(pasta_usuarios);
-
     // Busca recursivamente nas subpastas
     for (const subdiretorio of pasta_usuarios.subpastas) {
-      const resultado = searchServices.findDir(subdiretorio, nome);
-      if (resultado) {
-        return resultado;
+      const arquivo = subdiretorio.arquivos.at(0)
+      let nome_encontrado = arquivo.conteudo.split('\n').at(0).split(':').at(1).trim();
+      if (nome_encontrado === nome) {
+        let id = arquivo.conteudo.split('\n').at(1).split(':').at(1).trim()
+        const usr = new Usuario(nome_encontrado, id);
+        return usr;
       }
     }
     // Se não encontrou, retorna null

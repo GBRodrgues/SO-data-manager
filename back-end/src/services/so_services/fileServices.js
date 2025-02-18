@@ -1,6 +1,7 @@
 import Diretorio from "../../models/Diretorio.js";
 import Arquivo from "../../models/Arquivo.js";
 import searchServices from "./searchServices.js";
+import extraServices from "./extrasServices.js";
 
 const fileServices = {
   findArquivo: (name, dir = Diretorio) => {
@@ -46,7 +47,8 @@ const fileServices = {
     if (dir.arquivos.find((arquivo) => arquivo.nome === name)) {
       return { success: false, message: "Já existe um arquivo com esse nome." };
     }
-    const file = new Arquivo(name);
+    const proprAtual = extraServices.obterUsuarioAtivo();
+    const file = new Arquivo(name, "", proprAtual);
     dir.addArquivo(file);
     return { success: true, message: `Arquivo '${name}' criado` };
   },
