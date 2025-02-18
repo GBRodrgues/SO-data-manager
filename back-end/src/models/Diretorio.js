@@ -1,6 +1,7 @@
 import Arquivo from "./Arquivo.js";
 import Usuario from "./Usuario.js";
 import Permissao from "./Permissao.js";
+import extraServices from "../services/so_services/extrasServices.js";
 
 class Diretorio {
   constructor(nome, pai, proprietario) {
@@ -32,6 +33,7 @@ class Diretorio {
       usuario.getInfo()
     );
     subpasta_usuario.addArquivo(arquivo_usuario);
+    extraServices.definirUsuarioAtivo(usuario);
     usr.addSubPasta(subpasta_usuario);
     return rootDir;
   }
