@@ -41,7 +41,7 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 
 - [x] chmod permissao nome: Alterar permissões de um arquivo ou diretório (simular
       leitura, escrita e execução).
-- [] chown proprietario nome: Alterar o proprietário de um arquivo ou diretório.
+- [x] chown proprietario nome: Alterar o proprietário de um arquivo ou diretório.
 - [x] ls -l: Listar conteúdo do diretório com detalhes (nome, tipo, tamanho, permissões, etc.).
 
 #### Informações sobre Arquivos e Diretórios:
@@ -63,6 +63,8 @@ Sistema que simulará um Sistema Operacional, focando nas áreas de manipulaçã
 
 - [x] history: Exibir os últimos comandos digitados.
 - [x] su: Altera o usuário ativo.
+- [x] pipe: Permite encadear vários comandos para execução sequencial.
+- [x] adduser: Permite a adição de um novo usuário ao sistema.
 
 ## Front End
 

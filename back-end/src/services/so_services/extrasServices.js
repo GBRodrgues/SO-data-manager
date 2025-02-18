@@ -4,6 +4,7 @@ import Arquivo from "../../models/Arquivo.js";
 import fs from "fs";
 import path from "path";
 import searchServices from "./searchServices.js";
+import comandoService from "../comandoService.js";
 
 const extraServices = {
   usuarioAtivo: null, // Variável privada para armazenar o usuário ativo
@@ -339,6 +340,35 @@ const extraServices = {
       return { success: false, message: "Nenhum usuário ativo." };
     }
     return { success: true, message: usuario.nome };
+  },
+  executePipe: (commands, dir) => {
+    if (!commands || typeof commands !== "string") {
+      return {
+        success: false,
+        message: "Formato inválido. Use: pipe comando1 || comando2 || ...",
+      };
+    }
+
+    // Dividir comandos pelo operador '||'
+    const commandList = commands.split("||").map((cmd) => cmd.trim());
+
+    let result;
+    for (const command of commandList) {
+      const [cmd, ...args] = command.split(" ");
+
+      // Preparar os argumentos para passar ao comandoService
+      const argsObj = { name: args.join(" ") };
+
+      // Executar o comando
+      result = comandoService.execute(cmd, argsObj);
+
+      // Se algum comando falhar, interrompe a execução
+      if (!result.success) {
+        return result;
+      }
+    }
+
+    return result; // Retorna o resultado do último comando executado
   },
 };
 
