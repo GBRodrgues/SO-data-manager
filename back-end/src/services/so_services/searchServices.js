@@ -152,5 +152,21 @@ const searchServices = {
     // Se não encontrou, retorna null
     return null;
   },
+  buscarUsuarioPorNome: (diretorioAtual = Diretorio, nome) => {
+    const pasta_usuarios = diretorioAtual
+      .get_root()
+      .subpastas.find((pasta) => pasta.nome === "usuarios");
+    console.log(pasta_usuarios);
+
+    // Busca recursivamente nas subpastas
+    for (const subdiretorio of pasta_usuarios.subpastas) {
+      const resultado = searchServices.findDir(subdiretorio, nome);
+      if (resultado) {
+        return resultado;
+      }
+    }
+    // Se não encontrou, retorna null
+    return null;
+  },
 };
 export default searchServices;

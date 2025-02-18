@@ -5,25 +5,23 @@ import fs from "fs";
 import path from "path";
 import searchServices from "./searchServices.js";
 
-let usuarioAtivo = null; // Variável privada para armazenar o usuário ativo
-
-// Função para definir o usuário ativo
-const definirUsuarioAtivo = (usuario) => {
-  usuarioAtivo = usuario;
-};
-
-// Função para obter o usuário ativo
-const obterUsuarioAtivo = () => {
-  return usuarioAtivo;
-};
-
-// Função para verificar se há um usuário ativo
-const verificarUsuarioAtivo = () => {
-  return usuarioAtivo !== null;
-};
-export { definirUsuarioAtivo, obterUsuarioAtivo, verificarUsuarioAtivo };
-
 const extraServices = {
+  usuarioAtivo: null, // Variável privada para armazenar o usuário ativo
+
+  // Função para definir o usuário ativo
+  definirUsuarioAtivo: (usuario) => {
+    extraServices.usuarioAtivo = usuario;
+  },
+
+  // Função para obter o usuário ativo
+  obterUsuarioAtivo: () => {
+    return extraServices.usuarioAtivo;
+  },
+
+  // Função para verificar se há um usuário ativo
+  verificarUsuarioAtivo: () => {
+    return extraServices.usuarioAtivo !== null;
+  },
   listContents: (dir = Diretorio) => {
     const contents = dir.listContents();
     if (contents.arquivos.length == 0 && contents.subpastas.length == 0) {
@@ -126,7 +124,7 @@ const extraServices = {
     pastaUsuarios.addSubPasta(subpasta_usuario);
 
     // Definir o novo usuário como ativo
-    definirUsuarioAtivo(usuario);
+    extraServices.definirUsuarioAtivo(usuario);
 
     return {
       success: true,
@@ -169,7 +167,8 @@ const extraServices = {
 
   chown: (args, dir = Diretorio) => {
     // Verificar se args.name existe e está no formato correto
-    if (!args || !args.name || typeof args.name !== "string") {
+    console.log(args);
+    if (!args || typeof args !== "string") {
       return {
         success: false,
         message: "Formato inválido. Use: chown usuario nome",
@@ -177,7 +176,7 @@ const extraServices = {
     }
 
     // Dividir args.name em partes
-    const args_arr = args.name.split(" ");
+    const args_arr = args.split(" ");
     if (args_arr.length < 2) {
       return {
         success: false,
@@ -189,7 +188,7 @@ const extraServices = {
     const targetName = args_arr.slice(1).join(" "); // Nome do arquivo ou diretório (pode conter espaços)
 
     // Verificar se o usuário existe
-    const novoProprietario = buscarUsuarioPorNome(username);
+    const novoProprietario = searchServices.buscarUsuarioPorNome(dir, username);
     if (!novoProprietario) {
       return {
         success: false,
@@ -275,8 +274,6 @@ const extraServices = {
   },
 
   // Comando para trocar de usuário
-
-  obterUsuarioAtivo, // Exportando a função
   su: (username, dir = Diretorio) => {
     if (!username) {
       return {
@@ -327,7 +324,7 @@ const extraServices = {
     const usuario = new Usuario(nomeUsuario, idUsuario);
 
     // Definir o usuário encontrado como ativo
-    definirUsuarioAtivo(usuario);
+    extraServices.definirUsuarioAtivo(usuario);
 
     return {
       success: true,
@@ -337,7 +334,7 @@ const extraServices = {
 
   // Comando para verificar o usuário ativo
   whoami: () => {
-    const usuario = obterUsuarioAtivo();
+    const usuario = extraServices.obterUsuarioAtivo();
     if (!usuario) {
       return { success: false, message: "Nenhum usuário ativo." };
     }

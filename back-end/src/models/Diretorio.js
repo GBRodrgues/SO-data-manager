@@ -1,6 +1,7 @@
 import Arquivo from "./Arquivo.js";
 import Usuario from "./Usuario.js";
 import Permissao from "./Permissao.js";
+import extraServices from "../services/so_services/extrasServices.js";
 
 class Diretorio {
   constructor(nome, pai, proprietario) {
@@ -10,9 +11,8 @@ class Diretorio {
     this.data_modificacao = Date.now();
     this.diretorioPai = pai;
     this.tamanho = 0;
-    this.owner = proprietario;
+    this.proprietario = proprietario;
     this.permissoes = new Permissao(true, true, false);
-    this.proprietario = null;
   }
 
   static setupRoot() {
@@ -25,6 +25,7 @@ class Diretorio {
     const usuario = new Usuario("sudo", n_usuarios + 1);
     usr.mudarProprietario(usuario);
     rootDir.addSubPasta(usr);
+    rootDir.mudarProprietario(usuario);
 
     const subpasta_usuario = usuario.getPastaUsuario(usr);
     const arquivo_usuario = new Arquivo(
@@ -32,6 +33,7 @@ class Diretorio {
       usuario.getInfo()
     );
     subpasta_usuario.addArquivo(arquivo_usuario);
+    extraServices.definirUsuarioAtivo(usuario);
     usr.addSubPasta(subpasta_usuario);
     return rootDir;
   }
