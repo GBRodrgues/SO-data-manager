@@ -5,25 +5,23 @@ import fs from "fs";
 import path from "path";
 import searchServices from "./searchServices.js";
 
-let usuarioAtivo = null; // Variável privada para armazenar o usuário ativo
-
-// Função para definir o usuário ativo
-const definirUsuarioAtivo = (usuario) => {
-  usuarioAtivo = usuario;
-};
-
-// Função para obter o usuário ativo
-const obterUsuarioAtivo = () => {
-  return usuarioAtivo;
-};
-
-// Função para verificar se há um usuário ativo
-const verificarUsuarioAtivo = () => {
-  return usuarioAtivo !== null;
-};
-export { definirUsuarioAtivo, obterUsuarioAtivo, verificarUsuarioAtivo };
-
 const extraServices = {
+  usuarioAtivo: null, // Variável privada para armazenar o usuário ativo
+
+  // Função para definir o usuário ativo
+  definirUsuarioAtivo: (usuario) => {
+    extraServices.usuarioAtivo = usuario;
+  },
+
+  // Função para obter o usuário ativo
+  obterUsuarioAtivo: () => {
+    return extraServices.usuarioAtivo;
+  },
+
+  // Função para verificar se há um usuário ativo
+  verificarUsuarioAtivo: () => {
+    return extraServices.usuarioAtivo !== null;
+  },
   listContents: (dir = Diretorio) => {
     const contents = dir.listContents();
     if (contents.arquivos.length == 0 && contents.subpastas.length == 0) {
@@ -126,7 +124,7 @@ const extraServices = {
     pastaUsuarios.addSubPasta(subpasta_usuario);
 
     // Definir o novo usuário como ativo
-    definirUsuarioAtivo(usuario);
+    extraServices.definirUsuarioAtivo(usuario);
 
     return {
       success: true,
@@ -275,8 +273,6 @@ const extraServices = {
   },
 
   // Comando para trocar de usuário
-
-  obterUsuarioAtivo, // Exportando a função
   su: (username, dir = Diretorio) => {
     if (!username) {
       return {
@@ -337,7 +333,7 @@ const extraServices = {
 
   // Comando para verificar o usuário ativo
   whoami: () => {
-    const usuario = obterUsuarioAtivo();
+    const usuario = extraServices.obterUsuarioAtivo();
     if (!usuario) {
       return { success: false, message: "Nenhum usuário ativo." };
     }

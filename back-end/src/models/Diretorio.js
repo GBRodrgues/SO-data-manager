@@ -10,9 +10,8 @@ class Diretorio {
     this.data_modificacao = Date.now();
     this.diretorioPai = pai;
     this.tamanho = 0;
-    this.owner = proprietario;
+    this.proprietario = proprietario;
     this.permissoes = new Permissao(true, true, false);
-    this.proprietario = null;
   }
 
   static setupRoot() {
@@ -25,6 +24,7 @@ class Diretorio {
     const usuario = new Usuario("sudo", n_usuarios + 1);
     usr.mudarProprietario(usuario);
     rootDir.addSubPasta(usr);
+    rootDir.mudarProprietario(usuario);
 
     const subpasta_usuario = usuario.getPastaUsuario(usr);
     const arquivo_usuario = new Arquivo(

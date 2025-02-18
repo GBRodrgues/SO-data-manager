@@ -1,5 +1,6 @@
 import Diretorio from "../../models/Diretorio.js";
 import searchServices from "./searchServices.js";
+import extraServices from "./extrasServices.js";
 
 const dirServices = {
   createDirectory: (name, dir = Diretorio) => {
@@ -11,8 +12,8 @@ const dirServices = {
     if (dirExists) {
       return { success: false, message: `O diretório '${name}' já existe` };
     }
-
-    const newDir = new Diretorio(name, dir);
+    const proprAtual = extraServices.obterUsuarioAtivo();
+    const newDir = new Diretorio(name, dir, proprAtual);
     dir.addSubPasta(newDir);
     return {
       success: true,

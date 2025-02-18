@@ -5,9 +5,8 @@ class Arquivo {
     this.nome = nome;
     this.conteudo = conteudo;
     this.data_modificacao = Date.now();
-    this.owner = proprietario;
-    this.permissoes = new Permissao(true, true, false); // Permissões padrão: leitura e escrita
     this.proprietario = proprietario;
+    this.permissoes = new Permissao(true, true, false); // Permissões padrão: leitura e escrita
   }
 
   write(conteudo) {
